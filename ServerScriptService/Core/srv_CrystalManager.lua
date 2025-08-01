@@ -26,7 +26,7 @@ function CrystalManager.getCrystal()
 end
 
 function CrystalManager.damage(amount)
-    CrystalManager.CrystalHealth -= amount
+    CrystalManager.CrystalHealth = CrystalManager.CrystalHealth - amount
     if CrystalManager.CrystalHealth <= 0 then
         print("Crystal destroyed!")
         if crystal then

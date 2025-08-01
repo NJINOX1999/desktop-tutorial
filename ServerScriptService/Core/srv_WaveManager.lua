@@ -12,7 +12,7 @@ local WaveManager = { currentWave = 0 }
 local defaultSpawn = Vector3.new(0, 5, 0)
 
 function WaveManager:runWave()
-    self.currentWave += 1
+    self.currentWave = self.currentWave + 1
     print("Running wave", self.currentWave)
 
     local spawnFolder = workspace:FindFirstChild("SpawnPoints")
