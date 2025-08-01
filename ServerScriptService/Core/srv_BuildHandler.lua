@@ -29,6 +29,13 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     local tower = ServerStorage.Assets.Towers:FindFirstChild(itemId)
     if tower then
         local obj = tower:Clone()
+        obj:SetAttribute('IsBuilding', true)
+        if not obj:FindFirstChild('Health') then
+            local h = Instance.new('IntValue')
+            h.Name = 'Health'
+            h.Value = 100
+            h.Parent = obj
+        end
         obj.Parent = workspace.RuntimeObjects
         obj:SetPrimaryPartCFrame(CFrame.new(pos) * CFrame.Angles(math.rad(rot.X), math.rad(rot.Y), math.rad(rot.Z)))
         Tower.StartTracking(obj)

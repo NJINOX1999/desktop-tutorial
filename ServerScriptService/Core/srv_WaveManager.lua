@@ -52,6 +52,15 @@ _G.EventBus.Bind('NightStart', function()
     WaveManager:SpawnWave(WaveManager.currentWave)
 end)
 
+_G.EventBus.Bind('GameOver', function()
+    for _, obj in ipairs(workspace.RuntimeObjects:GetChildren()) do
+        if obj:FindFirstChildOfClass('Humanoid') then
+            obj:Destroy()
+        end
+    end
+    WaveManager.currentWave = 0
+end)
+
 _G.EventBus.Bind('CrystalPlaced', function()
     if WaveManager.currentWave == 0 then
         WaveManager:SpawnWave(0)

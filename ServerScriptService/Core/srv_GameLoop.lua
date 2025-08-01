@@ -30,6 +30,7 @@ _G.EventBus = {Bind = bind, Fire = fire}
 
 local ResourceManager = require(script.Parent.Modules.mod_ResourceManager)
 ResourceManager:Init()
+local Crystal = require(script.Parent.Modules.mod_Crystal)
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
 local reDay = remotes:FindFirstChild('RE_DayStart')
 local reNight = remotes:FindFirstChild('RE_NightStart')
@@ -56,6 +57,9 @@ RunService.Heartbeat:Connect(function(dt)
     timeOfDay = timeOfDay + dt
     checkTransitions()
     _G.EventBus.Fire('Heartbeat', dt)
+    if Crystal:ShouldGameOver() then
+        fire('GameOver')
+    end
 end)
 
 if rfDiff then

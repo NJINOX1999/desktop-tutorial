@@ -5,6 +5,7 @@ local PathfindingService = game:GetService('PathfindingService')
 local Crystal = require(script.Parent.mod_Crystal)
 local DropTable = require(script.Parent.mod_DropTable)
 local Utilities = require(script.Parent.mod_Utilities)
+local AnimUtil = require(script.Parent.mod_AnimationUtil)
 
 local MonsterAI = {}
 MonsterAI.__index = MonsterAI
@@ -17,7 +18,17 @@ function MonsterAI.new(model)
     self._target = nil
     self.damageBuffed = false
     if self.humanoid then
+        self.walkAnim = nil
+        self.attackAnim = nil
+        self.deathAnim = nil
+        local w = AnimUtil.load('MonsterWalk')
+        if w then self.walkAnim = self.humanoid:LoadAnimation(w) end
+        local a = AnimUtil.load('MonsterAttack')
+        if a then self.attackAnim = self.humanoid:LoadAnimation(a) end
+        local d = AnimUtil.load('MonsterDie')
+        if d then self.deathAnim = self.humanoid:LoadAnimation(d) end
         self.humanoid.Died:Connect(function()
+            if self.deathAnim then self.deathAnim:Play() end
             local loot = DropTable:GetLoot(model.Name)
             if loot then
                 local p = Instance.new('Part')
@@ -48,6 +59,7 @@ function MonsterAI.new(model)
                 self.damageBuffed = false
             end
         end)
+        if self.walkAnim then self.walkAnim:Play() end
     end
     return self
 end
@@ -66,6 +78,20 @@ function MonsterAI:getTarget()
         end
     end
     if nearest then return nearest end
+    -- check for nearby buildings
+    local closestBuild
+    for _, obj in ipairs(workspace.RuntimeObjects:GetChildren()) do
+        if obj:IsA('Model') and obj:GetAttribute('IsBuilding') then
+            if obj.PrimaryPart then
+                local d = (obj.PrimaryPart.Position - self.model.PrimaryPart.Position).Magnitude
+                if d < dist then
+                    dist = d
+                    closestBuild = obj.PrimaryPart
+                end
+            end
+        end
+    end
+    if closestBuild then return closestBuild end
     local crystal = workspace:FindFirstChild('Crystal')
     if crystal and crystal:IsA('BasePart') then
         return crystal
@@ -100,8 +126,18 @@ function MonsterAI:attack(target)
         if self.damageBuffed then
             dmg = dmg * require(game:GetService('ReplicatedStorage').Modules.mod_Config).CrystalBuffMultiplier
         end
+        if self.attackAnim then self.attackAnim:Play() end
         if target.Parent:FindFirstChildOfClass('Humanoid') then
             target.Parent.Humanoid:TakeDamage(dmg)
+        elseif target.Parent:GetAttribute('IsBuilding') then
+            if target.Parent:FindFirstChild('Health') then
+                target.Parent.Health.Value = math.max(target.Parent.Health.Value - dmg, 0)
+                if target.Parent.Health.Value <= 0 then
+                    target.Parent:Destroy()
+                end
+            else
+                target.Parent:Destroy()
+            end
         elseif target.Name == 'Crystal' then
             Crystal:Damage(dmg)
         end
@@ -117,9 +153,13 @@ function MonsterAI:update()
     end
     if self._path and #self._path > 0 then
         self:moveAlongPath()
+        if self.walkAnim and not self.walkAnim.IsPlaying then
+            self.walkAnim:Play()
+        end
     elseif target then
         if (target.Position - self.model.PrimaryPart.Position).Magnitude < 4 then
             self:attack(target)
+            if self.walkAnim then self.walkAnim:Stop() end
         else
             self:computePath(target)
         end

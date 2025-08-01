@@ -41,6 +41,7 @@ function Tower:step(dt)
 end
 
 function Tower.StartTracking(towerModel)
+    towerModel:SetAttribute('IsBuilding', true)
     local tower = Tower.new(towerModel)
     RunService.Heartbeat:Connect(function(dt)
         if towerModel.Parent then

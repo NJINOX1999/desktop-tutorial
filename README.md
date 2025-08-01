@@ -18,5 +18,8 @@ Implemented systems include:
 - Host player selects one of three save slots; guests play without persistent data.
 - Crystal placement triggers wave 0 and day/night cycle. Destroyed crystals buff existing monsters until a replacement is set.
 - Daytime spawns occasional wandering monsters in addition to nightly waves.
+- Revive and healing system using `E` key when near teammates.
+- Building preview client with server validation and placement limits.
+- Game over cleanup with optional inventory buyback via `RF_BuyBack`.
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.
