@@ -15,6 +15,7 @@ function MonsterAI.new(model)
     self.humanoid = model:FindFirstChildOfClass('Humanoid')
     self._path = nil
     self._target = nil
+    self.damageBuffed = false
     if self.humanoid then
         self.humanoid.Died:Connect(function()
             local loot = DropTable:GetLoot(model.Name)
@@ -32,6 +33,19 @@ function MonsterAI.new(model)
             end
             for _, plr in ipairs(Players:GetPlayers()) do
                 Utilities.addXP(plr, 5)
+            end
+        end)
+        _G.EventBus.Bind('CrystalDestroyed', function()
+            if self.humanoid and self.humanoid.Health > 0 then
+                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed * require(game:GetService('ReplicatedStorage').Modules.mod_Config).CrystalBuffMultiplier
+                self.damageBuffed = true
+            end
+        end)
+        _G.EventBus.Bind('CrystalPlaced', function()
+            if self.humanoid and self.humanoid.Health > 0 and self.damageBuffed then
+                local mul = require(game:GetService('ReplicatedStorage').Modules.mod_Config).CrystalBuffMultiplier
+                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed / mul
+                self.damageBuffed = false
             end
         end)
     end
@@ -82,10 +96,14 @@ end
 
 function MonsterAI:attack(target)
     if target:IsA('BasePart') then
+        local dmg = 5
+        if self.damageBuffed then
+            dmg = dmg * require(game:GetService('ReplicatedStorage').Modules.mod_Config).CrystalBuffMultiplier
+        end
         if target.Parent:FindFirstChildOfClass('Humanoid') then
-            target.Parent.Humanoid:TakeDamage(5)
+            target.Parent.Humanoid:TakeDamage(dmg)
         elseif target.Name == 'Crystal' then
-            Crystal:Damage(5)
+            Crystal:Damage(dmg)
         end
     end
 end

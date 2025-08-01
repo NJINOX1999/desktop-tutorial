@@ -15,6 +15,8 @@ Implemented systems include:
 - Crystal health module tracks base health when monsters attack.
 - Lightweight anti exploit checks for speed and teleport abuse.
 - Difficulty and XP multiplier can be set by the host.
-- Save service supports up to three data slots per player.
+- Host player selects one of three save slots; guests play without persistent data.
+- Crystal placement triggers wave 0 and day/night cycle. Destroyed crystals buff existing monsters until a replacement is set.
+- Daytime spawns occasional wandering monsters in addition to nightly waves.
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.

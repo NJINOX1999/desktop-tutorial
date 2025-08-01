@@ -6,6 +6,7 @@ local MonsterAI = require(script.Parent.Parent.Modules.mod_MonsterAI)
 
 local WaveManager = {}
 WaveManager.currentWave = 0
+WaveManager.dayLoop = nil
 
 local spawnFolder = workspace:FindFirstChild('SpawnPoints')
 
@@ -49,6 +50,36 @@ end
 _G.EventBus.Bind('NightStart', function()
     WaveManager.currentWave  = WaveManager.currentWave + 1
     WaveManager:SpawnWave(WaveManager.currentWave)
+end)
+
+_G.EventBus.Bind('CrystalPlaced', function()
+    if WaveManager.currentWave == 0 then
+        WaveManager:SpawnWave(0)
+    end
+end)
+
+local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
+
+local function daySpawnLoop()
+    while true do
+        task.wait(Config.DaySpawnInterval)
+        if not _G.isNight and math.random() < Config.DaySpawnChance then
+            WaveManager:SpawnWave(WaveManager.currentWave)
+        end
+    end
+end
+
+_G.EventBus.Bind('DayStart', function()
+    if not WaveManager.dayLoop then
+        WaveManager.dayLoop = task.spawn(daySpawnLoop)
+    end
+end)
+
+_G.EventBus.Bind('NightStart', function()
+    if WaveManager.dayLoop then
+        task.cancel(WaveManager.dayLoop)
+        WaveManager.dayLoop = nil
+    end
 end)
 
 return WaveManager

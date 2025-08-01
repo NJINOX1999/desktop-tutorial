@@ -52,11 +52,20 @@ local function savePlayer(player)
 end
 
 Players.PlayerAdded:Connect(function(player)
-    player:SetAttribute('DataSlot', 1)
-    loadPlayer(player)
+    local host = Players:GetPlayers()[1]
+    if not host or player == host then
+        player:SetAttribute('IsHost', true)
+        player:SetAttribute('DataSlot', 1)
+        loadPlayer(player)
+    else
+        player._data = getDefaultData()
+    end
 end)
 
 RF_SetSlot.OnServerInvoke = function(player, slot)
+    if not player:GetAttribute('IsHost') then
+        return false
+    end
     if typeof(slot) ~= 'number' or slot < 1 or slot > 3 then
         return false
     end
@@ -64,16 +73,24 @@ RF_SetSlot.OnServerInvoke = function(player, slot)
     loadPlayer(player)
     return true
 end
-Players.PlayerRemoving:Connect(savePlayer)
+Players.PlayerRemoving:Connect(function(player)
+    if player:GetAttribute('IsHost') then
+        savePlayer(player)
+    end
+end)
 game:BindToClose(function()
     for _, player in ipairs(Players:GetPlayers()) do
-        savePlayer(player)
+        if player:GetAttribute('IsHost') then
+            savePlayer(player)
+        end
     end
 end)
 
 while true do
     for _, player in ipairs(Players:GetPlayers()) do
-        savePlayer(player)
+        if player:GetAttribute('IsHost') then
+            savePlayer(player)
+        end
     end
     task.wait(SAVE_INTERVAL)
 end

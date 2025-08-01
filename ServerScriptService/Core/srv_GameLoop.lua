@@ -10,6 +10,7 @@ local CYCLE_LENGTH = DAY_LENGTH + NIGHT_LENGTH
 
 local timeOfDay = 0
 local isNight = false
+_G.isNight = false
 
 -- simple event dispatcher stored in _G
 local callbacks = {}
@@ -37,10 +38,12 @@ local rfDiff = remotes:FindFirstChild('RF_SetDifficulty')
 local function checkTransitions()
     if not isNight and timeOfDay >= DAY_LENGTH then
         isNight = true
+        _G.isNight = true
         fire('NightStart')
         if reNight then reNight:FireAllClients() end
     elseif isNight and timeOfDay >= CYCLE_LENGTH then
         isNight = false
+        _G.isNight = false
         timeOfDay = timeOfDay - CYCLE_LENGTH
         fire('DayStart')
         if reDay then reDay:FireAllClients() end
@@ -52,10 +55,14 @@ end
 RunService.Heartbeat:Connect(function(dt)
     timeOfDay = timeOfDay + dt
     checkTransitions()
+    _G.EventBus.Fire('Heartbeat', dt)
 end)
 
 if rfDiff then
     rfDiff.OnServerInvoke = function(player, diff)
+        if player ~= game:GetService('Players'):GetPlayers()[1] then
+            return false
+        end
         if diff == 'Easy' or diff == 'Normal' or diff == 'Hard' then
             Config.Difficulty = diff
             return true
