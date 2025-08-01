@@ -45,6 +45,11 @@ end
 
 Players.PlayerAdded:Connect(loadPlayer)
 Players.PlayerRemoving:Connect(savePlayer)
+game:BindToClose(function()
+    for _, player in ipairs(Players:GetPlayers()) do
+        savePlayer(player)
+    end
+end)
 
 while true do
     for _, player in ipairs(Players:GetPlayers()) do

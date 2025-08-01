@@ -4,10 +4,12 @@ This repository is an early prototype of the **Islebound** tower defense/surviva
 
 Implemented systems include:
 
-- Day/night game loop dispatching `DayStart`, `NightStart`, and `TimeOfDayChanged` events.
-- Wave manager that spawns scaled zombie waves and bosses every tenth night.
-- DataStore v2 save service with autosave and player data loading.
-- Resource manager that replaces tagged map objects with breakable prefabs and respawns them after 5 minutes.
-- Simple monster AI targeting nearby players or the crystal.
+- Day/night game loop that fires local and remote events (`DayStart`, `NightStart`, `TimeOfDayChanged`).
+- Wave manager spawning scaled zombie waves with a boss every tenth night.
+- DataStore v2 save service with autosave, player join/load and shutdown saves.
+- Resource manager replacing tagged map objects with breakable prefabs that respawn after five minutes.
+- Server-side build handler validating placement and enforcing per-player turret limits.
+- Basic monster AI plus tower logic for attacking spawned monsters.
+- Lightweight anti exploit checks for speed and teleport abuse.
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.

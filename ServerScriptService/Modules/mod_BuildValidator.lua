@@ -11,6 +11,14 @@ function BuildValidator:CanPlace(position)
     if not result then
         return false
     end
+    local spawns = Workspace:FindFirstChild('SpawnPoints')
+    if spawns then
+        for _, p in ipairs(spawns:GetChildren()) do
+            if (p.Position - position).Magnitude < 10 then
+                return false
+            end
+        end
+    end
     return true
 end
 

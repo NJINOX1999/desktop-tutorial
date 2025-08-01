@@ -1,5 +1,6 @@
 -- Game loop managing day/night cycle and wave timer
 local RunService = game:GetService('RunService')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local DAY_LENGTH = 600 -- seconds
 local NIGHT_LENGTH = 600 -- seconds
@@ -26,16 +27,23 @@ _G.EventBus = {Bind = bind, Fire = fire}
 
 local ResourceManager = require(script.Parent.Modules.mod_ResourceManager)
 ResourceManager:Init()
+local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local reDay = remotes:FindFirstChild('RE_DayStart')
+local reNight = remotes:FindFirstChild('RE_NightStart')
+local reTime = remotes:FindFirstChild('RE_TimeOfDayChanged')
 local function checkTransitions()
     if not isNight and timeOfDay >= DAY_LENGTH then
         isNight = true
         fire('NightStart')
+        if reNight then reNight:FireAllClients() end
     elseif isNight and timeOfDay >= CYCLE_LENGTH then
         isNight = false
         timeOfDay = timeOfDay - CYCLE_LENGTH
         fire('DayStart')
+        if reDay then reDay:FireAllClients() end
     end
     fire('TimeOfDayChanged', timeOfDay, isNight)
+    if reTime then reTime:FireAllClients(timeOfDay, isNight) end
 end
 
 RunService.Heartbeat:Connect(function(dt)
