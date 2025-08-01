@@ -35,6 +35,7 @@ local function loadPlayer(player)
         data = getDefaultData()
     end
     player._data = data
+    player:SetAttribute('Level', data.Level or 1)
 end
 
 local function savePlayer(player)
@@ -59,6 +60,7 @@ Players.PlayerAdded:Connect(function(player)
         loadPlayer(player)
     else
         player._data = getDefaultData()
+        player:SetAttribute('Level', 1)
     end
 end)
 

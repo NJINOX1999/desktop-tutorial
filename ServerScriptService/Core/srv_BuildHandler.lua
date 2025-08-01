@@ -14,15 +14,16 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     if typeof(pos) ~= 'Vector3' or typeof(rot) ~= 'Vector3' or type(itemId) ~= 'string' then
         return
     end
+    local data = player._data or {Level = 1, Coins = 0}
+    local maxLimit = Config.BaseTurretLimit + (data.Level - 1)
     local count = builtCounts[player] or 0
-    if count >= Config.MaxTurretsPerPlayer then
+    if count >= maxLimit then
         return
     end
     if not BuildValidator:CanPlace(pos) then
         return
     end
     local cost = Config.TowerCost
-    local data = player._data
     if not data or data.Coins < cost then
         return
     end

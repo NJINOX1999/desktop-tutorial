@@ -11,8 +11,9 @@ Config.XPMultipliers = {
 
 Config.DayLength = 600
 Config.NightLength = 600
-Config.MaxTurretsPerPlayer = 3
+Config.BaseTurretLimit = 3
 Config.TowerCost = 10
+Config.LevelXP = {100, 250, 450, 700, 1000}
 
 -- gameplay rules
 Config.VillageRadius = 50 -- spawn monsters outside this radius

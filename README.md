@@ -10,7 +10,7 @@ Implemented systems include:
 - Resource manager replacing tagged map objects with breakable prefabs that respawn after five minutes.
 - Server-side build handler validating placement and enforcing per-player turret limits.
 - Basic monster AI with pathfinding and simple loot drops plus tower logic for attacking spawned monsters.
-- Towers cost coins to build which are deducted from player save data.
+- Towers cost coins to build which are deducted from player save data. Additional turrets unlock through the new level system.
 - Loot pickups grant coins via a server-side handler.
 - Crystal health module tracks base health when monsters attack.
 - Lightweight anti exploit checks for speed and teleport abuse.
@@ -20,6 +20,7 @@ Implemented systems include:
 - Daytime spawns occasional wandering monsters in addition to nightly waves.
 - Revive and healing system using `E` key when near teammates.
 - Building preview client with server validation and placement limits.
+- A simple level system that converts XP gains into levels which extend the turret limit.
 - Game over cleanup with optional inventory buyback via `RF_BuyBack`.
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.
