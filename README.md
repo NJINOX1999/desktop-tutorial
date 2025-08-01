@@ -9,7 +9,10 @@ Implemented systems include:
 - DataStore v2 save service with autosave, player join/load and shutdown saves.
 - Resource manager replacing tagged map objects with breakable prefabs that respawn after five minutes.
 - Server-side build handler validating placement and enforcing per-player turret limits.
-- Basic monster AI plus tower logic for attacking spawned monsters.
+- Basic monster AI with pathfinding and simple loot drops plus tower logic for attacking spawned monsters.
+- Towers cost coins to build which are deducted from player save data.
+- Loot pickups grant coins via a server-side handler.
+- Crystal health module tracks base health when monsters attack.
 - Lightweight anti exploit checks for speed and teleport abuse.
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.

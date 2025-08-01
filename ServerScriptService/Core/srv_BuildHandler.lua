@@ -8,6 +8,7 @@ local Config = require(ReplicatedStorage.Modules.mod_Config)
 local Tower = require(script.Parent.Parent.Modules.mod_Tower)
 
 local builtCounts = {}
+local Players = game:GetService('Players')
 
 BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     if typeof(pos) ~= 'Vector3' or typeof(rot) ~= 'Vector3' or type(itemId) ~= 'string' then
@@ -20,6 +21,11 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     if not BuildValidator:CanPlace(pos) then
         return
     end
+    local cost = Config.TowerCost
+    local data = player._data
+    if not data or data.Coins < cost then
+        return
+    end
     local tower = ServerStorage.Assets.Towers:FindFirstChild(itemId)
     if tower then
         local obj = tower:Clone()
@@ -27,8 +33,13 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
         obj:SetPrimaryPartCFrame(CFrame.new(pos) * CFrame.Angles(math.rad(rot.X), math.rad(rot.Y), math.rad(rot.Z)))
         Tower.StartTracking(obj)
         builtCounts[player] = count + 1
+        data.Coins = data.Coins - cost
         obj.Destroying:Connect(function()
             builtCounts[player] = math.max((builtCounts[player] or 1) - 1, 0)
         end)
     end
+end)
+
+Players.PlayerRemoving:Connect(function(plr)
+    builtCounts[plr] = nil
 end)
