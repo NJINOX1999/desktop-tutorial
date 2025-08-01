@@ -14,5 +14,7 @@ Implemented systems include:
 - Loot pickups grant coins via a server-side handler.
 - Crystal health module tracks base health when monsters attack.
 - Lightweight anti exploit checks for speed and teleport abuse.
+- Difficulty and XP multiplier can be set by the host.
+- Save service supports up to three data slots per player.
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.

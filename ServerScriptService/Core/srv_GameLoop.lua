@@ -2,8 +2,10 @@
 local RunService = game:GetService('RunService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
-local DAY_LENGTH = 600 -- seconds
-local NIGHT_LENGTH = 600 -- seconds
+local Config = require(ReplicatedStorage.Modules.mod_Config)
+
+local DAY_LENGTH = Config.DayLength -- seconds
+local NIGHT_LENGTH = Config.NightLength -- seconds
 local CYCLE_LENGTH = DAY_LENGTH + NIGHT_LENGTH
 
 local timeOfDay = 0
@@ -31,6 +33,7 @@ local remotes = ReplicatedStorage:WaitForChild('Remotes')
 local reDay = remotes:FindFirstChild('RE_DayStart')
 local reNight = remotes:FindFirstChild('RE_NightStart')
 local reTime = remotes:FindFirstChild('RE_TimeOfDayChanged')
+local rfDiff = remotes:FindFirstChild('RF_SetDifficulty')
 local function checkTransitions()
     if not isNight and timeOfDay >= DAY_LENGTH then
         isNight = true
@@ -50,3 +53,13 @@ RunService.Heartbeat:Connect(function(dt)
     timeOfDay = timeOfDay + dt
     checkTransitions()
 end)
+
+if rfDiff then
+    rfDiff.OnServerInvoke = function(player, diff)
+        if diff == 'Easy' or diff == 'Normal' or diff == 'Hard' then
+            Config.Difficulty = diff
+            return true
+        end
+        return false
+    end
+end

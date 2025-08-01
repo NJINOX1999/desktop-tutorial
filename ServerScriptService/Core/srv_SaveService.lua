@@ -2,8 +2,11 @@
 local DataStoreService = game:GetService('DataStoreService')
 local Players = game:GetService('Players')
 
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+
 local SAVE_INTERVAL = 120
 local store = DataStoreService:GetDataStore('IsleboundData', 'v2')
+local RF_SetSlot = ReplicatedStorage.Remotes:WaitForChild('RF_SetDataSlot')
 
 local function getDefaultData()
     return {
@@ -18,8 +21,13 @@ local function getDefaultData()
     }
 end
 
+local function getKey(player)
+    local slot = player:GetAttribute('DataSlot') or 1
+    return string.format('%d_%d', player.UserId, slot)
+end
+
 local function loadPlayer(player)
-    local key = tostring(player.UserId)
+    local key = getKey(player)
     local success, data = pcall(function()
         return store:GetAsync(key)
     end)
@@ -31,7 +39,7 @@ end
 
 local function savePlayer(player)
     if not player or not player.UserId then return end
-    local key = tostring(player.UserId)
+    local key = getKey(player)
     local data = player._data or getDefaultData()
     local success, err = pcall(function()
         store:UpdateAsync(key, function()
@@ -43,7 +51,19 @@ local function savePlayer(player)
     end
 end
 
-Players.PlayerAdded:Connect(loadPlayer)
+Players.PlayerAdded:Connect(function(player)
+    player:SetAttribute('DataSlot', 1)
+    loadPlayer(player)
+end)
+
+RF_SetSlot.OnServerInvoke = function(player, slot)
+    if typeof(slot) ~= 'number' or slot < 1 or slot > 3 then
+        return false
+    end
+    player:SetAttribute('DataSlot', slot)
+    loadPlayer(player)
+    return true
+end
 Players.PlayerRemoving:Connect(savePlayer)
 game:BindToClose(function()
     for _, player in ipairs(Players:GetPlayers()) do

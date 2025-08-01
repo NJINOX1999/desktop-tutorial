@@ -4,6 +4,7 @@ local PathfindingService = game:GetService('PathfindingService')
 
 local Crystal = require(script.Parent.mod_Crystal)
 local DropTable = require(script.Parent.mod_DropTable)
+local Utilities = require(script.Parent.mod_Utilities)
 
 local MonsterAI = {}
 MonsterAI.__index = MonsterAI
@@ -28,6 +29,9 @@ function MonsterAI.new(model)
                 task.delay(10, function()
                     if p.Parent then p:Destroy() end
                 end)
+            end
+            for _, plr in ipairs(Players:GetPlayers()) do
+                Utilities.addXP(plr, 5)
             end
         end)
     end
