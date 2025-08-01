@@ -1,5 +1,6 @@
-# Welcome to GitHub Desktop!
+# Islebound: Last Defenders
 
-This is your README. READMEs are where you can communicate what your project is and how to use it.
-
-Write your name on line 6, save it, and then head back to GitHub Desktop.
+This repository provides a tiny prototype for the **Islebound: Last Defenders** project.
+Running the place will spawn monsters that actively pursue players and a crystal base.
+Trees respawn after being harvested and new waves scale in size automatically.
+Use this as a foundation for further development and customization.
