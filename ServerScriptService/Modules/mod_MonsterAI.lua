@@ -12,10 +12,12 @@ local runtimeFolder = workspace:FindFirstChild("RuntimeObjects") or Instance.new
 runtimeFolder.Name = "RuntimeObjects"
 
 local CrystalManager = require(game.ServerScriptService.Core.srv_CrystalManager)
+local DropTable = require(game.ServerScriptService.Modules.mod_DropTable)
 
 local function findTarget(rootPart)
     local closest
     local dist = math.huge
+    -- prefer players
     for _, player in ipairs(Players:GetPlayers()) do
         local char = player.Character
         if char and char.PrimaryPart then
@@ -23,6 +25,18 @@ local function findTarget(rootPart)
             if d < dist then
                 dist = d
                 closest = char
+            end
+        end
+    end
+    -- then walls
+    if not closest then
+        for _, part in ipairs(workspace.RuntimeObjects:GetChildren()) do
+            if part.Name == "Wall" and part:IsA("BasePart") then
+                local d = (part.Position - rootPart.Position).Magnitude
+                if d < dist then
+                    dist = d
+                    closest = part
+                end
             end
         end
     end
@@ -84,6 +98,16 @@ function MonsterAI.spawn(position)
                 end
             end
             task.wait(0.5)
+        end
+        -- drop loot when the monster dies
+        local drops = DropTable.getDrops("Default")
+        for _,drop in ipairs(drops) do
+            local item = Instance.new("Part")
+            item.Name = drop.item
+            item.Size = Vector3.new(1,1,1)
+            item.Position = root.Position
+            item.Anchored = false
+            item.Parent = runtimeFolder
         end
         model:Destroy()
     end)

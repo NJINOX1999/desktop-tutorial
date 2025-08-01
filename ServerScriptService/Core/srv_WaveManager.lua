@@ -3,7 +3,9 @@
     Spawns simple monsters each wave.
 ]]
 
+local Config = require(game.ReplicatedStorage.Modules.mod_Config)
 local MonsterAI = require(game.ServerScriptService.Modules.mod_MonsterAI)
+local CrystalManager = require(game.ServerScriptService.Core.srv_CrystalManager)
 
 local WaveManager = { currentWave = 0 }
 
@@ -18,7 +20,10 @@ function WaveManager:runWave()
     if spawnFolder then
         for _,p in ipairs(spawnFolder:GetChildren()) do
             if p:IsA("BasePart") then
-                table.insert(spawns, p.Position)
+                local crystal = CrystalManager.getCrystal()
+                if not crystal or (p.Position - crystal.Position).Magnitude >= Config.SafeRadius then
+                    table.insert(spawns, p.Position)
+                end
             end
         end
     end

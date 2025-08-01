@@ -4,7 +4,12 @@
 
 local Config = {
     MaxPlayers = 6,
-    WaveLength = 60 -- seconds
+
+    DayLength = 600,   -- seconds
+    NightLength = 600, -- seconds
+
+    WaveInterval = 60, -- time between waves at night
+    SafeRadius = 50,   -- monsters cannot spawn within this distance from the crystal
 }
 
 return Config
