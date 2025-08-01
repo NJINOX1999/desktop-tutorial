@@ -22,9 +22,13 @@ local function spawnNode(data)
     node.Position = data.pos
     node.Anchored = true
     node.Parent = runtimeFolder
+
+    local used = false
     node.Touched:Connect(function(hit)
+        if used then return end
         local hum = hit.Parent:FindFirstChildOfClass("Humanoid")
         if hum then
+            used = true
             local loot = Instance.new("Part")
             loot.Name = node.Name .. "Drop"
             loot.Size = Vector3.new(1,1,1)

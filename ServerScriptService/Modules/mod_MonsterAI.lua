@@ -48,14 +48,19 @@ end
 
 local function followTarget(humanoid, rootPart, target)
     if not target or not target.PrimaryPart then return end
+
     local path = PathfindingService:CreatePath()
-    local success = pcall(function()
+    local ok = pcall(function()
         path:ComputeAsync(rootPart.Position, target.PrimaryPart.Position)
     end)
-    if success and path.Status == Enum.PathStatus.Success then
+
+    if ok and path.Status == Enum.PathStatus.Success then
         for _, wp in ipairs(path:GetWaypoints()) do
             humanoid:MoveTo(wp.Position)
             humanoid.MoveToFinished:Wait()
+            if (rootPart.Position - target.PrimaryPart.Position).Magnitude < 4 then
+                break
+            end
         end
     else
         humanoid:MoveTo(target.PrimaryPart.Position)
