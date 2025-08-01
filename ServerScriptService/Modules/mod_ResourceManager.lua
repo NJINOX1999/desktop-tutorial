@@ -28,19 +28,27 @@ function ResourceManager:Register(object, prefab)
 end
 
 function ResourceManager:Init()
-    if not workspace:FindFirstChild('Map') then return end
-    for _, obj in ipairs(workspace.Map:GetDescendants()) do
-        if CollectionService:HasTag(obj, 'PluginTree') and treePrefab then
+    -- search the entire workspace for plugin placed trees/nodes so respawn works
+    -- even for objects outside the Map folder (e.g. near the village)
+    for _, obj in ipairs(CollectionService:GetTagged('PluginTree')) do
+        if obj:IsDescendantOf(workspace) and treePrefab then
+            local cf = obj:GetPrimaryPartCFrame()
+            local parent = obj.Parent
+            obj:Destroy()
             local clone = treePrefab:Clone()
-            clone:SetPrimaryPartCFrame(obj:GetPrimaryPartCFrame())
-            clone.Parent = obj.Parent
-            obj:Destroy()
+            clone:SetPrimaryPartCFrame(cf)
+            clone.Parent = parent
             self:Register(clone, treePrefab)
-        elseif CollectionService:HasTag(obj, 'PluginNode') and nodePrefab then
-            local clone = nodePrefab:Clone()
-            clone:SetPrimaryPartCFrame(obj:GetPrimaryPartCFrame())
-            clone.Parent = obj.Parent
+        end
+    end
+    for _, obj in ipairs(CollectionService:GetTagged('PluginNode')) do
+        if obj:IsDescendantOf(workspace) and nodePrefab then
+            local cf = obj:GetPrimaryPartCFrame()
+            local parent = obj.Parent
             obj:Destroy()
+            local clone = nodePrefab:Clone()
+            clone:SetPrimaryPartCFrame(cf)
+            clone.Parent = parent
             self:Register(clone, nodePrefab)
         end
     end
