@@ -1,0 +1,1 @@
+-- Placeholder for RE_DamageIndicator Remote
