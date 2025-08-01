@@ -1,1 +1,1 @@
--- RemoteEvent for night start notifications
+return Instance.new('RemoteEvent')

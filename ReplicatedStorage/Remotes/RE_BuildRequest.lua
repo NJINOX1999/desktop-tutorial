@@ -1,1 +1,1 @@
--- Placeholder for RE_BuildRequest Remote
+return Instance.new('RemoteEvent')

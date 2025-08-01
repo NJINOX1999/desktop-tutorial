@@ -1,1 +1,1 @@
--- Placeholder for RE_DamageIndicator Remote
+return Instance.new('RemoteEvent')

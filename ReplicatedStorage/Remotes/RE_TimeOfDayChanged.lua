@@ -1,1 +1,1 @@
--- RemoteEvent for time-of-day updates
+return Instance.new('RemoteEvent')

@@ -1,1 +1,1 @@
--- Placeholder for RF_BuyShopItem RemoteFunction
+return Instance.new('RemoteFunction')

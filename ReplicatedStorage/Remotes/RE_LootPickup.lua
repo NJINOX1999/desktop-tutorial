@@ -1,1 +1,1 @@
--- Placeholder for RE_LootPickup Remote
+return Instance.new('RemoteEvent')

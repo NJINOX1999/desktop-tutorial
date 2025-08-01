@@ -1,1 +1,1 @@
--- RemoteEvent for day start notifications
+return Instance.new('RemoteEvent')
