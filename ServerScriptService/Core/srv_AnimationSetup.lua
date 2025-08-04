@@ -7,6 +7,7 @@ if folder then
             if ok and typeof(anim) == 'Instance' then
                 anim.Name = module.Name
                 anim.Parent = folder
+                module:Destroy()
             end
         end
     end

@@ -1,3 +1,3 @@
 local anim = Instance.new('Animation')
-anim.AnimationId = 'rbxassetid://0'
+anim.AnimationId = 'rbxassetid://507767968'
 return anim
