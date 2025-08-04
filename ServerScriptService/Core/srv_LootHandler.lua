@@ -8,6 +8,10 @@ RE.OnServerEvent:Connect(function(player, loot)
     if typeof(loot) ~= 'Instance' or not loot:IsDescendantOf(workspace.RuntimeObjects) then
         return
     end
+    if loot:GetAttribute('Claimed') then
+        return
+    end
+    loot:SetAttribute('Claimed', true)
     local value = tonumber(loot:GetAttribute('Coins'))
     if value and player._data then
         player._data.Coins = player._data.Coins + value

@@ -5,7 +5,7 @@ local PathfindingService = game:GetService('PathfindingService')
 local Crystal = require(script.Parent.mod_Crystal)
 local DropTable = require(script.Parent.mod_DropTable)
 local Utilities = require(script.Parent.mod_Utilities)
-local AnimUtil = require(script.Parent.mod_AnimationUtil)
+local AnimUtil = require(game:GetService('ReplicatedStorage').Modules.mod_AnimationManager)
 local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
 
 local MonsterAI = {}
@@ -19,15 +19,9 @@ function MonsterAI.new(model)
     self._target = nil
     self.damageBuffed = false
     if self.humanoid then
-        self.walkAnim = nil
-        self.attackAnim = nil
-        self.deathAnim = nil
-        local w = AnimUtil.load('MonsterWalk')
-        if w then self.walkAnim = self.humanoid:LoadAnimation(w) end
-        local a = AnimUtil.load('MonsterAttack')
-        if a then self.attackAnim = self.humanoid:LoadAnimation(a) end
-        local d = AnimUtil.load('MonsterDie')
-        if d then self.deathAnim = self.humanoid:LoadAnimation(d) end
+        self.walkAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Walk')
+        self.attackAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Attack')
+        self.deathAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Death')
         self.humanoid.Died:Connect(function()
             if self.deathAnim then self.deathAnim:Play() end
             local loots = DropTable:getDrops(model.Name)
@@ -54,14 +48,13 @@ function MonsterAI.new(model)
         end)
         _G.EventBus.Bind('CrystalDestroyed', function()
             if self.humanoid and self.humanoid.Health > 0 then
-                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed * require(game:GetService('ReplicatedStorage').Modules.mod_Config).CrystalBuffMultiplier
+                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed * Config.CrystalBuffMultiplier
                 self.damageBuffed = true
             end
         end)
         _G.EventBus.Bind('CrystalPlaced', function()
             if self.humanoid and self.humanoid.Health > 0 and self.damageBuffed then
-                local mul = require(game:GetService('ReplicatedStorage').Modules.mod_Config).CrystalBuffMultiplier
-                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed / mul
+                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed / Config.CrystalBuffMultiplier
                 self.damageBuffed = false
             end
         end)
