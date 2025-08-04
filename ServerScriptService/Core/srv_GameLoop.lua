@@ -1,6 +1,7 @@
 -- Game loop managing day/night cycle and wave timer
 local RunService = game:GetService('RunService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Players = game:GetService('Players')
 
 local Config = require(ReplicatedStorage.Modules.mod_Config)
 
@@ -11,6 +12,7 @@ local CYCLE_LENGTH = DAY_LENGTH + NIGHT_LENGTH
 local timeOfDay = 0
 local isNight = false
 _G.isNight = false
+local gameRunning = true
 
 -- simple event dispatcher stored in _G
 local callbacks = {}
@@ -35,7 +37,27 @@ local remotes = ReplicatedStorage:WaitForChild('Remotes')
 local reDay = remotes:FindFirstChild('RE_DayStart')
 local reNight = remotes:FindFirstChild('RE_NightStart')
 local reTime = remotes:FindFirstChild('RE_TimeOfDayChanged')
-local rfDiff = remotes:FindFirstChild('RF_SetDifficulty')
+local reSetDiff = remotes:FindFirstChild('RE_SetDifficulty')
+local reGameOver = remotes:FindFirstChild('RE_GameOver')
+local reAssignCrystal = remotes:FindFirstChild('RE_AssignCrystal')
+
+local function resetGame()
+    Crystal:Reset()
+    local host = Players:GetPlayers()[1]
+    if host then
+        local tool = Instance.new('Tool')
+        tool.Name = 'CrystalItem'
+        tool.RequiresHandle = false
+        tool.Parent = host:FindFirstChildOfClass('Backpack') or host:WaitForChild('Backpack')
+        if reAssignCrystal then reAssignCrystal:FireClient(host) end
+    end
+    timeOfDay = 0
+    isNight = false
+    _G.isNight = false
+    fire('DayStart')
+    if reDay then reDay:FireAllClients() end
+    gameRunning = true
+end
 local function checkTransitions()
     if not isNight and timeOfDay >= DAY_LENGTH then
         isNight = true
@@ -54,23 +76,35 @@ local function checkTransitions()
 end
 
 RunService.Heartbeat:Connect(function(dt)
+    if not gameRunning then return end
     timeOfDay = timeOfDay + dt
     checkTransitions()
     _G.EventBus.Fire('Heartbeat', dt)
     if Crystal:ShouldGameOver() then
+        gameRunning = false
         fire('GameOver')
+        task.delay(20, function()
+            resetGame()
+            if reGameOver then
+                reGameOver:FireAllClients('Reset')
+            end
+        end)
     end
 end)
 
-if rfDiff then
-    rfDiff.OnServerInvoke = function(player, diff)
+if reSetDiff then
+    reSetDiff.OnServerEvent:Connect(function(player, diff)
         if player ~= game:GetService('Players'):GetPlayers()[1] then
-            return false
+            return
         end
         if diff == 'Easy' or diff == 'Normal' or diff == 'Hard' then
             Config.Difficulty = diff
-            return true
         end
-        return false
-    end
+    end)
+end
+
+if reGameOver then
+    _G.EventBus.Bind('GameOver', function()
+        reGameOver:FireAllClients('Lost')
+    end)
 end

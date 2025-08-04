@@ -1,5 +1,7 @@
 -- Simple tower behavior attacking nearby monsters
 local RunService = game:GetService('RunService')
+local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local AnimManager = require(ReplicatedStorage.Modules.mod_AnimationManager)
 
 local Tower = {}
 Tower.__index = Tower
@@ -37,15 +39,25 @@ function Tower:step(dt)
     local target = self:findTarget()
     if target then
         target:TakeDamage(self.damage)
+        AnimManager.play(self.model, 'Anim_TowerFire')
     end
 end
 
 function Tower.StartTracking(towerModel)
     towerModel:SetAttribute('IsBuilding', true)
     local tower = Tower.new(towerModel)
-    RunService.Heartbeat:Connect(function(dt)
+    tower._conn = RunService.Heartbeat:Connect(function(dt)
         if towerModel.Parent then
             tower:step(dt)
+        else
+            if tower._conn then
+                tower._conn:Disconnect()
+            end
+        end
+    end)
+    towerModel.Destroying:Connect(function()
+        if tower._conn then
+            tower._conn:Disconnect()
         end
     end)
 end
