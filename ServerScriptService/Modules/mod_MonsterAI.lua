@@ -58,6 +58,10 @@ function MonsterAI.new(model)
                 self.damageBuffed = false
             end
         end)
+        if _G.crystalLost then
+            self.humanoid.WalkSpeed = self.humanoid.WalkSpeed * Config.CrystalBuffMultiplier
+            self.damageBuffed = true
+        end
         if self.walkAnim then self.walkAnim:Play() end
     end
     return self

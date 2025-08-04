@@ -40,6 +40,11 @@ function WaveManager:SpawnWave(index)
                 hum.MaxHealth = typeInfo.Health * info.hpMul
                 hum.Health = hum.MaxHealth
                 hum.WalkSpeed = typeInfo.Speed * info.dmgMul
+                if _G.crystalLost then
+                    hum.MaxHealth = hum.MaxHealth * Config.CrystalBuffMultiplier
+                    hum.Health = hum.MaxHealth
+                    hum.WalkSpeed = hum.WalkSpeed * Config.CrystalBuffMultiplier
+                end
                 monster:SetAttribute('DamageMul', info.dmgMul * (typeInfo.Damage / 5))
             end
             MonsterAI.new(monster):Start()

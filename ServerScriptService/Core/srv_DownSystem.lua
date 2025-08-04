@@ -43,7 +43,7 @@ Players.PlayerAdded:Connect(function(plr)
 end)
 
 RE_PlayerSpawnRequest.OnServerEvent:Connect(function(plr)
-    if workspace.RuntimeObjects:FindFirstChild('Crystal') then
+    if workspace:FindFirstChild('Crystal') then
         plr:LoadCharacter()
     end
 end)
