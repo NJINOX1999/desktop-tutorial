@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local AnimationUtil = require(game.ServerScriptService.Modules.mod_AnimationUtil)
 local folder = ReplicatedStorage:FindFirstChild('Animations')
 if folder then
     for _, module in ipairs(folder:GetChildren()) do
@@ -12,4 +13,6 @@ if folder then
         end
     end
 end
+
+AnimationUtil.preloadAll()
 return {}
