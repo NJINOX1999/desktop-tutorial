@@ -1,4 +1,5 @@
 local Players = game:GetService('Players')
+Players.CharacterAutoLoads = false
 local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
 local Remotes = game:GetService('ReplicatedStorage'):WaitForChild('Remotes')
 local RE_RequestRevive = Remotes:WaitForChild('RE_RequestRevive')
@@ -20,6 +21,7 @@ local function onCharacterAdded(player, char)
 end
 
 Players.PlayerAdded:Connect(function(plr)
+    plr:LoadCharacter()
     plr.CharacterAdded:Connect(function(char)
         onCharacterAdded(plr, char)
     end)
