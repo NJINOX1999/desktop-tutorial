@@ -1,12 +1,18 @@
 -- Client-side build placement preview and request
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local BuildRequest = ReplicatedStorage.Remotes:WaitForChild('RE_BuildRequest')
+local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
+local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 local preview
 local canPlace = false
 
 local BuildSystem = {}
+
+RE_BuildMessage.OnClientEvent:Connect(function(text)
+    warn(text)
+end)
 
 function BuildSystem:RequestBuild(itemId, cframe)
     if canPlace then
