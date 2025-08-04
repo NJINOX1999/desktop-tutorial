@@ -26,11 +26,13 @@ rePlace.OnServerEvent:Connect(function(player, pos)
 end)
 
 _G.EventBus.Bind('CrystalDestroyed', function()
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr.Character and plr.Character:FindFirstChild('Humanoid') and plr.Character.Humanoid.Health > 0 then
-            reAssign:FireClient(plr)
-            return
-        end
+    if CrystalModule:ShouldGameOver() then
+        _G.EventBus.Fire('GameOver')
+        return
+    end
+    local host = Players:GetPlayers()[1]
+    if host then
+        reAssign:FireClient(host)
     end
 end)
 

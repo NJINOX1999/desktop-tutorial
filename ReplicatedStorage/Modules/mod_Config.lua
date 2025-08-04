@@ -1,12 +1,11 @@
 -- Shared configuration constants
 local Config = {}
 
--- difficulty settings
 Config.Difficulty = "Normal" -- Easy, Normal, Hard
-Config.XPMultipliers = {
-    Easy = 0.5,
-    Normal = 1,
-    Hard = 1.5,
+Config.DifficultyModifiers = {
+    Easy = {SpawnCount = 0.75, Damage = 0.75, Health = 0.75, XP = 0.5},
+    Normal = {SpawnCount = 1, Damage = 1, Health = 1, XP = 1},
+    Hard = {SpawnCount = 1.5, Damage = 1.5, Health = 1.25, XP = 1.5},
 }
 
 Config.DayLength = 600
@@ -19,12 +18,16 @@ Config.LevelXP = {100, 250, 450, 700, 1000}
 Config.VillageRadius = 50 -- spawn monsters outside this radius
 Config.DaySpawnInterval = 30
 Config.DaySpawnChance = 0.05
-Config.CrystalEvacTime = 180
 Config.CrystalBuffMultiplier = 1.5
 Config.DownTime = 60
 Config.ReviveTime = 15
 Config.HealCooldown = 60
 Config.HealTime = 15
+
+Config.WaveBaseCount = 5
+Config.WaveCountIncrement = 2
+Config.WaveHealthIncrement = 0.1
+Config.WaveDamageIncrement = 0.05
 
 Config.WeaponDamage = {
     Fist = 5,

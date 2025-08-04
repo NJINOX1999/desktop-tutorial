@@ -1,9 +1,11 @@
 local Players = game:GetService('Players')
 Players.CharacterAutoLoads = false
 local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
+local Crystal = require(script.Parent.Parent.Modules.mod_Crystal)
 local Remotes = game:GetService('ReplicatedStorage'):WaitForChild('Remotes')
 local RE_RequestRevive = Remotes:WaitForChild('RE_RequestRevive')
 local RE_RequestHeal = Remotes:WaitForChild('RE_RequestHeal')
+local RE_PlayerSpawnRequest = Remotes:WaitForChild('RE_PlayerSpawnRequest')
 
 local downed = {}
 local reviveActions = {}
@@ -17,14 +19,22 @@ local function onCharacterAdded(player, char)
         downed[player] = {timer = os.clock()}
         hum.Health = 1
         hum.PlatformStand = true
+        if Crystal:ShouldGameOver() then
+            _G.EventBus.Fire('GameOver')
+        end
     end)
 end
 
 Players.PlayerAdded:Connect(function(plr)
-    plr:LoadCharacter()
     plr.CharacterAdded:Connect(function(char)
         onCharacterAdded(plr, char)
     end)
+end)
+
+RE_PlayerSpawnRequest.OnServerEvent:Connect(function(plr)
+    if workspace.RuntimeObjects:FindFirstChild('Crystal') then
+        plr:LoadCharacter()
+    end
 end)
 
 RE_RequestRevive.OnServerEvent:Connect(function(healer, target)
@@ -73,6 +83,9 @@ _G.EventBus.Bind('Heartbeat', function()
                 plr.Character:BreakJoints()
             end
             downed[plr] = nil
+            if Crystal:ShouldGameOver() then
+                _G.EventBus.Fire('GameOver')
+            end
         end
     end
 end)

@@ -5,26 +5,29 @@ local Config = require(ReplicatedStorage.Modules.mod_Config)
 
 local Crystal = {}
 Crystal.Health = 1000
-Crystal.evacTimer = 0
+Crystal.Destroyed = false
 
 function Crystal:Reset()
     self.Health = 1000
-    self.evacTimer = 0
+    self.Destroyed = false
 end
 
 function Crystal:Damage(amount)
     self.Health = math.max(self.Health - amount, 0)
-    if self.Health <= 0 and self.evacTimer == 0 then
-        self.evacTimer = os.clock()
+    if self.Health <= 0 and not self.Destroyed then
+        self.Destroyed = true
         _G.EventBus.Fire('CrystalDestroyed')
     end
 end
 
 function Crystal:ShouldGameOver()
-    if self.evacTimer > 0 then
-        return os.clock() - self.evacTimer > Config.CrystalEvacTime
+    if not self.Destroyed then return false end
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr.Character and plr.Character:FindFirstChild('Humanoid') and plr.Character.Humanoid.Health > 0 then
+            return false
+        end
     end
-    return false
+    return true
 end
 
 return Crystal

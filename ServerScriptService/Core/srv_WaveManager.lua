@@ -3,6 +3,7 @@ local ServerStorage = game:GetService('ServerStorage')
 local Players = game:GetService('Players')
 
 local MonsterAI = require(script.Parent.Parent.Modules.mod_MonsterAI)
+local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
 
 local WaveManager = {}
 WaveManager.currentWave = 0
@@ -11,10 +12,12 @@ WaveManager.dayLoop = nil
 local spawnFolder = workspace:FindFirstChild('SpawnPoints')
 
 local function getWaveInfo(index)
-    local base = 5 + index * 2
-    local hpMul = 1 + index * 0.1
-    local dmgMul = 1 + index * 0.05
-    return {count = base, hpMul = hpMul, dmgMul = dmgMul, boss = index % 10 == 0}
+    local diff = Config.DifficultyModifiers[Config.Difficulty] or {}
+    local base = Config.WaveBaseCount + index * Config.WaveCountIncrement
+    local count = math.floor(base * (diff.SpawnCount or 1))
+    local hpMul = (1 + index * Config.WaveHealthIncrement) * (diff.Health or 1)
+    local dmgMul = (1 + index * Config.WaveDamageIncrement) * (diff.Damage or 1)
+    return {count = count, hpMul = hpMul, dmgMul = dmgMul, boss = index % 10 == 0}
 end
 
 function WaveManager:SpawnWave(index)
@@ -28,9 +31,10 @@ function WaveManager:SpawnWave(index)
             monster.Parent = workspace.RuntimeObjects
             monster.HumanoidRootPart.CFrame = spawnPoint.CFrame
             if monster:FindFirstChildOfClass('Humanoid') then
-                monster.Humanoid.MaxHealth  = monster.Humanoid.MaxHealth *  info.hpMul
+                monster.Humanoid.MaxHealth  = monster.Humanoid.MaxHealth * info.hpMul
                 monster.Humanoid.Health = monster.Humanoid.MaxHealth
                 monster.Humanoid.WalkSpeed = monster.Humanoid.WalkSpeed * info.dmgMul
+                monster:SetAttribute('DamageMul', info.dmgMul)
             end
             MonsterAI.new(monster):Start()
         end
@@ -66,8 +70,6 @@ _G.EventBus.Bind('CrystalPlaced', function()
         WaveManager:SpawnWave(0)
     end
 end)
-
-local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
 
 local function daySpawnLoop()
     while true do

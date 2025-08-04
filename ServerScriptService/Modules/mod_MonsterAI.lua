@@ -6,6 +6,7 @@ local Crystal = require(script.Parent.mod_Crystal)
 local DropTable = require(script.Parent.mod_DropTable)
 local Utilities = require(script.Parent.mod_Utilities)
 local AnimUtil = require(script.Parent.mod_AnimationUtil)
+local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
 
 local MonsterAI = {}
 MonsterAI.__index = MonsterAI
@@ -122,9 +123,9 @@ end
 
 function MonsterAI:attack(target)
     if target:IsA('BasePart') then
-        local dmg = 5
+        local dmg = 5 * (self.model:GetAttribute('DamageMul') or 1)
         if self.damageBuffed then
-            dmg = dmg * require(game:GetService('ReplicatedStorage').Modules.mod_Config).CrystalBuffMultiplier
+            dmg = dmg * Config.CrystalBuffMultiplier
         end
         if self.attackAnim then self.attackAnim:Play() end
         if target.Parent:FindFirstChildOfClass('Humanoid') then
