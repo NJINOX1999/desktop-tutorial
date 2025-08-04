@@ -3,10 +3,14 @@ local DataStoreService = game:GetService('DataStoreService')
 local Players = game:GetService('Players')
 
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local Config = require(ReplicatedStorage.Modules.mod_Config)
 
 local SAVE_INTERVAL = 120
 local store = DataStoreService:GetDataStore('IsleboundData', 'v2')
-local RF_SetSlot = ReplicatedStorage.Remotes:WaitForChild('RF_SetDataSlot')
+local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local RF_SetSlot = remotes:WaitForChild('RF_SetDataSlot')
+local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
+local RE_UpdateAmmo = remotes:WaitForChild('RE_UpdateAmmo')
 
 local function getDefaultData()
     return {
@@ -17,7 +21,9 @@ local function getDefaultData()
         Inventory = {},
         Turrets = {},
         Pets = {},
-        Settings = {Music = true, Particles = true}
+        Settings = {Music = true, Particles = true},
+        Weapon = Config.StartWeapon,
+        Ammo = Config.StartAmmo
     }
 end
 
@@ -36,6 +42,7 @@ local function loadPlayer(player)
     end
     player._data = data
     player:SetAttribute('Level', data.Level or 1)
+    player:SetAttribute('XP', data.XP or 0)
 end
 
 local function savePlayer(player)
@@ -52,6 +59,20 @@ local function savePlayer(player)
     end
 end
 
+local function setupLeaderstats(plr)
+    local ls = Instance.new('Folder')
+    ls.Name = 'leaderstats'
+    ls.Parent = plr
+    local coins = Instance.new('IntValue')
+    coins.Name = 'Coins'
+    coins.Value = plr._data.Coins or 0
+    coins.Parent = ls
+    coins.Changed:Connect(function(v)
+        RE_UpdateCoins:FireClient(plr, v)
+    end)
+    RE_UpdateCoins:FireClient(plr, coins.Value)
+end
+
 Players.PlayerAdded:Connect(function(player)
     local host = Players:GetPlayers()[1]
     if not host or player == host then
@@ -62,6 +83,14 @@ Players.PlayerAdded:Connect(function(player)
         player._data = getDefaultData()
         player:SetAttribute('Level', 1)
     end
+    player._data.Weapon = player._data.Weapon or Config.StartWeapon
+    player._data.Ammo = player._data.Ammo or Config.StartAmmo
+    player:SetAttribute('Ammo', player._data.Ammo)
+    RE_UpdateAmmo:FireClient(player, player._data.Ammo)
+    player:GetAttributeChangedSignal('Ammo'):Connect(function()
+        RE_UpdateAmmo:FireClient(player, player:GetAttribute('Ammo'))
+    end)
+    setupLeaderstats(player)
 end)
 
 RF_SetSlot.OnServerInvoke = function(player, slot)

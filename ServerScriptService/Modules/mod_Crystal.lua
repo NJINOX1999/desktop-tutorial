@@ -1,30 +1,40 @@
 -- Crystal health manager
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Players = game:GetService('Players')
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local RE_UpdateCrystalHP = ReplicatedStorage.Remotes:WaitForChild('RE_UpdateCrystalHP')
 
 local Crystal = {}
 Crystal.Health = 1000
-Crystal.evacTimer = 0
+Crystal.Destroyed = false
+Crystal.Lost = false -- game state flag when crystal is destroyed and not yet replaced
 
 function Crystal:Reset()
     self.Health = 1000
-    self.evacTimer = 0
+    self.Destroyed = false
+    self.Lost = false
+    _G.crystalLost = false
+    RE_UpdateCrystalHP:FireAllClients(self.Health)
 end
 
 function Crystal:Damage(amount)
     self.Health = math.max(self.Health - amount, 0)
-    if self.Health <= 0 and self.evacTimer == 0 then
-        self.evacTimer = os.clock()
+    RE_UpdateCrystalHP:FireAllClients(self.Health)
+    if self.Health <= 0 and not self.Destroyed then
+        self.Destroyed = true
+        self.Lost = true
+        _G.crystalLost = true
         _G.EventBus.Fire('CrystalDestroyed')
     end
 end
 
 function Crystal:ShouldGameOver()
-    if self.evacTimer > 0 then
-        return os.clock() - self.evacTimer > Config.CrystalEvacTime
+    if not self.Destroyed then return false end
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr.Character and plr.Character:FindFirstChild('Humanoid') and plr.Character.Humanoid.Health > 0 then
+            return false
+        end
     end
-    return false
+    return true
 end
 
 return Crystal
