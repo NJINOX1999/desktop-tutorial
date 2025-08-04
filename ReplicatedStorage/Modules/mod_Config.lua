@@ -58,5 +58,6 @@ Config.MaxPlayers = 6
 
 Config.StartWeapon = 'Hands'
 Config.StartAmmo = 0
+Config.BuybackPrice = 10
 
 return Config

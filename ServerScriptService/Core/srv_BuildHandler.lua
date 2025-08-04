@@ -6,7 +6,7 @@ local remotes = ReplicatedStorage:WaitForChild('Remotes')
 local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
 local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
 local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
-local BuildValidator = require(script.Parent.Parent.Modules.mod_BuildValidator)
+local BuildValidator = require(ReplicatedStorage.Modules.mod_BuildValidator)
 local Config = require(ReplicatedStorage.Modules.mod_Config)
 local Tower = require(script.Parent.Parent.Modules.mod_Tower)
 

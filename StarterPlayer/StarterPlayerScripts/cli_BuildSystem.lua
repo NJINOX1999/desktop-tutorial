@@ -7,6 +7,7 @@ local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 local preview
 local canPlace = false
+local BuildValidator = require(ReplicatedStorage.Modules.mod_BuildValidator)
 
 local BuildSystem = {}
 
@@ -37,7 +38,21 @@ function BuildSystem:Update()
     if not preview then return end
     local cf = mouse.Hit
     preview:SetPrimaryPartCFrame(cf)
-    canPlace = true
+    if BuildValidator:CanPlace(cf.Position) then
+        canPlace = true
+        for _, d in ipairs(preview:GetDescendants()) do
+            if d:IsA('BasePart') then
+                d.Color = Color3.fromRGB(0, 255, 0)
+            end
+        end
+    else
+        canPlace = false
+        for _, d in ipairs(preview:GetDescendants()) do
+            if d:IsA('BasePart') then
+                d.Color = Color3.fromRGB(255, 0, 0)
+            end
+        end
+    end
 end
 
 game:GetService('RunService').RenderStepped:Connect(function()
