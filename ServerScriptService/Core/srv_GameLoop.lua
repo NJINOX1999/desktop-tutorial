@@ -36,6 +36,7 @@ local reDay = remotes:FindFirstChild('RE_DayStart')
 local reNight = remotes:FindFirstChild('RE_NightStart')
 local reTime = remotes:FindFirstChild('RE_TimeOfDayChanged')
 local reSetDiff = remotes:FindFirstChild('RE_SetDifficulty')
+local reGameOver = remotes:FindFirstChild('RE_GameOver')
 local function checkTransitions()
     if not isNight and timeOfDay >= DAY_LENGTH then
         isNight = true
@@ -70,5 +71,11 @@ if reSetDiff then
         if diff == 'Easy' or diff == 'Normal' or diff == 'Hard' then
             Config.Difficulty = diff
         end
+    end)
+end
+
+if reGameOver then
+    _G.EventBus.Bind('GameOver', function()
+        reGameOver:FireAllClients()
     end)
 end

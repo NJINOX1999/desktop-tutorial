@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
 local RE_PlayerSpawnRequest = remotes:WaitForChild('RE_PlayerSpawnRequest')
 local RE_SetDifficulty = remotes:WaitForChild('RE_SetDifficulty')
+local RE_GameOver = remotes:WaitForChild('RE_GameOver')
 
 local gui = script.Parent
 local playButton = gui:WaitForChild('PlayButton')
@@ -18,3 +19,7 @@ for _, name in ipairs({'Easy','Normal','Hard'}) do
         end)
     end
 end
+
+RE_GameOver.OnClientEvent:Connect(function()
+    playButton.Visible = true
+end)
