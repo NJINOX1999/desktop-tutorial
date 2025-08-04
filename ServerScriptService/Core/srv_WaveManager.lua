@@ -23,18 +23,23 @@ end
 function WaveManager:SpawnWave(index)
     local info = getWaveInfo(index)
     if not spawnFolder then return end
+    local types = Config.WaveMonsters[index] or Config.WaveMonsters.default
     for i = 1, info.count do
         local spawnPoint = spawnFolder:GetChildren()[((i-1) % #spawnFolder:GetChildren())+1]
-        local template = ServerStorage.Assets.Monsters:FindFirstChild('Zombie')
+        local tName = types[((i-1) % #types) + 1]
+        local typeInfo = Config.MonsterTypes[tName] or Config.MonsterTypes.Default
+        local template = ServerStorage.Assets.Monsters:FindFirstChild(typeInfo.Model)
         if template and spawnPoint then
             local monster = template:Clone()
+            monster.Name = tName
             monster.Parent = workspace.RuntimeObjects
             monster.HumanoidRootPart.CFrame = spawnPoint.CFrame
-            if monster:FindFirstChildOfClass('Humanoid') then
-                monster.Humanoid.MaxHealth  = monster.Humanoid.MaxHealth * info.hpMul
-                monster.Humanoid.Health = monster.Humanoid.MaxHealth
-                monster.Humanoid.WalkSpeed = monster.Humanoid.WalkSpeed * info.dmgMul
-                monster:SetAttribute('DamageMul', info.dmgMul)
+            local hum = monster:FindFirstChildOfClass('Humanoid')
+            if hum then
+                hum.MaxHealth = typeInfo.Health * info.hpMul
+                hum.Health = hum.MaxHealth
+                hum.WalkSpeed = typeInfo.Speed * info.dmgMul
+                monster:SetAttribute('DamageMul', info.dmgMul * (typeInfo.Damage / 5))
             end
             MonsterAI.new(monster):Start()
         end

@@ -10,7 +10,7 @@ local function onPrompt(prompt)
 end
 
 workspace.ChildAdded:Connect(function(obj)
-    if obj:IsA('Part') and obj:GetAttribute('Coins') then
+    if obj:IsA('Part') and (obj:GetAttribute('Coins') or obj:GetAttribute('ItemId')) then
         local prompt = Instance.new('ProximityPrompt')
         prompt.ActionText = 'Pickup'
         prompt.ObjectText = obj.Name

@@ -30,14 +30,19 @@ function MonsterAI.new(model)
         if d then self.deathAnim = self.humanoid:LoadAnimation(d) end
         self.humanoid.Died:Connect(function()
             if self.deathAnim then self.deathAnim:Play() end
-            local loot = DropTable:GetLoot(model.Name)
-            if loot then
+            local loots = DropTable:getDrops(model.Name)
+            for _, loot in ipairs(loots) do
                 local p = Instance.new('Part')
                 p.Name = loot.itemId
-                p.Position = model.PrimaryPart.Position
+                p.Position = model.PrimaryPart.Position + Vector3.new(0, 2, 0)
                 p.Size = Vector3.new(1,1,1)
                 p.Anchored = true
-                p:SetAttribute('Coins', loot.qty or 1)
+                if loot.itemId == 'Coin' then
+                    p:SetAttribute('Coins', loot.qty)
+                else
+                    p:SetAttribute('ItemId', loot.itemId)
+                    p:SetAttribute('Qty', loot.qty)
+                end
                 p.Parent = workspace.RuntimeObjects
                 task.delay(10, function()
                     if p.Parent then p:Destroy() end

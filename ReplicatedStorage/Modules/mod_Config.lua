@@ -29,11 +29,27 @@ Config.WaveCountIncrement = 2
 Config.WaveHealthIncrement = 0.1
 Config.WaveDamageIncrement = 0.05
 
-Config.WeaponDamage = {
-    Fist = 5,
-    Stick = 8,
+Config.Weapons = {
+    Hands = {Damage = 5, Range = 5},
+    Stick = {Damage = 8, Range = 6},
+    Bow = {Damage = 15, Range = 60, Ammo = 1}
+}
+
+Config.MonsterTypes = {
+    Default = {Model = 'Zombie', Health = 100, Speed = 16, Damage = 5},
+    Tank = {Model = 'Zombie', Health = 300, Speed = 10, Damage = 15},
+    Speedy = {Model = 'Zombie', Health = 80, Speed = 24, Damage = 5}
+}
+
+Config.WaveMonsters = {
+    default = {'Default'},
+    [3] = {'Default', 'Speedy'},
+    [5] = {'Default', 'Tank'}
 }
 
 Config.MaxPlayers = 6
+
+Config.StartWeapon = 'Hands'
+Config.StartAmmo = 0
 
 return Config
