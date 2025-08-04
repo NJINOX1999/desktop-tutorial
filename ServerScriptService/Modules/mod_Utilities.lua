@@ -16,6 +16,7 @@ function Utilities.addXP(player, amount)
         local diff = Config.DifficultyModifiers[Config.Difficulty]
         local mult = diff and diff.XP or 1
         data.XP = (data.XP or 0) + math.floor(amount * mult)
+        player:SetAttribute('XP', data.XP)
         LevelService.check(player)
     end
 end

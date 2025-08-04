@@ -1,9 +1,10 @@
 -- Handles monster wave spawning logic
 local ServerStorage = game:GetService('ServerStorage')
-local Players = game:GetService('Players')
 
 local MonsterAI = require(script.Parent.Parent.Modules.mod_MonsterAI)
 local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
+local remotes = game:GetService('ReplicatedStorage'):WaitForChild('Remotes')
+local RE_UpdateWave = remotes:WaitForChild('RE_UpdateWave')
 
 local WaveManager = {}
 WaveManager.currentWave = 0
@@ -54,6 +55,7 @@ function WaveManager:SpawnWave(index)
             MonsterAI.new(boss):Start()
         end
     end
+    RE_UpdateWave:FireAllClients(index)
 end
 
 _G.EventBus.Bind('NightStart', function()
@@ -68,6 +70,7 @@ _G.EventBus.Bind('GameOver', function()
         end
     end
     WaveManager.currentWave = 0
+    RE_UpdateWave:FireAllClients(0)
 end)
 
 _G.EventBus.Bind('CrystalPlaced', function()

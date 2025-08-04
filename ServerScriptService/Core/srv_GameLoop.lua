@@ -35,7 +35,7 @@ local remotes = ReplicatedStorage:WaitForChild('Remotes')
 local reDay = remotes:FindFirstChild('RE_DayStart')
 local reNight = remotes:FindFirstChild('RE_NightStart')
 local reTime = remotes:FindFirstChild('RE_TimeOfDayChanged')
-local rfDiff = remotes:FindFirstChild('RF_SetDifficulty')
+local reSetDiff = remotes:FindFirstChild('RE_SetDifficulty')
 local function checkTransitions()
     if not isNight and timeOfDay >= DAY_LENGTH then
         isNight = true
@@ -62,15 +62,13 @@ RunService.Heartbeat:Connect(function(dt)
     end
 end)
 
-if rfDiff then
-    rfDiff.OnServerInvoke = function(player, diff)
+if reSetDiff then
+    reSetDiff.OnServerEvent:Connect(function(player, diff)
         if player ~= game:GetService('Players'):GetPlayers()[1] then
-            return false
+            return
         end
         if diff == 'Easy' or diff == 'Normal' or diff == 'Hard' then
             Config.Difficulty = diff
-            return true
         end
-        return false
-    end
+    end)
 end

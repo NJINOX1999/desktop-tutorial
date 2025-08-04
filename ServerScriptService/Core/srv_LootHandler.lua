@@ -1,6 +1,8 @@
 -- Handles loot pickup requests from clients
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local RE = ReplicatedStorage.Remotes:WaitForChild('RE_LootPickup')
+local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local RE = remotes:WaitForChild('RE_LootPickup')
+local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
 
 RE.OnServerEvent:Connect(function(player, loot)
     if typeof(loot) ~= 'Instance' or not loot:IsDescendantOf(workspace.RuntimeObjects) then
@@ -12,6 +14,7 @@ RE.OnServerEvent:Connect(function(player, loot)
         local ls = player:FindFirstChild('leaderstats')
         if ls and ls:FindFirstChild('Coins') then
             ls.Coins.Value = player._data.Coins
+            RE_UpdateCoins:FireClient(player, ls.Coins.Value)
         end
     end
     local itemId = loot:GetAttribute('ItemId')

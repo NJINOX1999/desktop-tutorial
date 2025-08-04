@@ -9,6 +9,10 @@ Locale.en = {
     day = 'Day',
     night = 'Night',
     coins = 'Coins',
+    hp = 'HP',
+    crystal = 'Crystal',
+    ammo = 'Ammo',
+    xp = 'XP',
     inventory = 'Inventory'
 }
 

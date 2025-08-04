@@ -1,8 +1,9 @@
 -- Handles weapon firing and damage application
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Players = game:GetService('Players')
 
-local RE_Fire = ReplicatedStorage.Remotes:WaitForChild('RE_FireWeapon')
+local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local RE_Fire = remotes:WaitForChild('RE_FireWeapon')
+local RE_UpdateAmmo = remotes:WaitForChild('RE_UpdateAmmo')
 local Config = require(ReplicatedStorage.Modules.mod_Config)
 
 local function getWeaponInfo(player)
@@ -23,6 +24,7 @@ RE_Fire.OnServerEvent:Connect(function(player, targetPos)
         if player._data.Ammo < info.Ammo then return end
         player._data.Ammo = player._data.Ammo - info.Ammo
         player:SetAttribute('Ammo', player._data.Ammo)
+        RE_UpdateAmmo:FireClient(player, player._data.Ammo)
     end
     local direction = (targetPos - root.Position).Unit * info.Range
     local params = RaycastParams.new()
