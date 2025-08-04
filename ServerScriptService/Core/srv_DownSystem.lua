@@ -11,6 +11,17 @@ local downed = {}
 local reviveActions = {}
 local healCooldowns = {}
 
+local function revive(target, healer)
+    local info = downed[target]
+    if not info then return end
+    downed[target] = nil
+    if target.Character and target.Character:FindFirstChildOfClass('Humanoid') then
+        local h = target.Character.Humanoid
+        h.PlatformStand = false
+        h.Health = h.MaxHealth
+    end
+end
+
 local function onCharacterAdded(player, char)
     local hum = char:FindFirstChildOfClass('Humanoid')
     if not hum then return end
@@ -64,17 +75,6 @@ RE_RequestHeal.OnServerEvent:Connect(function(healer, target)
         end)
     end
 end)
-
-local function revive(target, healer)
-    local info = downed[target]
-    if not info then return end
-    downed[target] = nil
-    if target.Character and target.Character:FindFirstChildOfClass('Humanoid') then
-        local h = target.Character.Humanoid
-        h.PlatformStand = false
-        h.Health = h.MaxHealth
-    end
-end
 
 _G.EventBus.Bind('Heartbeat', function()
     for plr, info in pairs(downed) do
