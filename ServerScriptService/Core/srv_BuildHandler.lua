@@ -2,7 +2,10 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerStorage = game:GetService('ServerStorage')
 
-local BuildRequest = ReplicatedStorage.Remotes:WaitForChild('RE_BuildRequest')
+local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
+local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
+local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
 local BuildValidator = require(script.Parent.Parent.Modules.mod_BuildValidator)
 local Config = require(ReplicatedStorage.Modules.mod_Config)
 local Tower = require(script.Parent.Parent.Modules.mod_Tower)
@@ -15,7 +18,8 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
         return
     end
     local data = player._data or {Level = 1, Coins = 0}
-    local maxLimit = Config.BaseTurretLimit + (data.Level - 1)
+    local level = player:GetAttribute('Level') or data.Level or 1
+    local maxLimit = Config.BaseTurretLimit + math.max(0, level - 1)
     local count = builtCounts[player] or 0
     if count >= maxLimit then
         return
@@ -23,8 +27,12 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     if not BuildValidator:CanPlace(pos) then
         return
     end
-    local cost = Config.TowerCost
+    local cost = Config.BuildPrices[itemId]
+    if not cost then
+        return
+    end
     if not data or data.Coins < cost then
+        RE_BuildMessage:FireClient(player, 'Not enough coins')
         return
     end
     local tower = ServerStorage.Assets.Towers:FindFirstChild(itemId)
@@ -42,6 +50,11 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
         Tower.StartTracking(obj)
         builtCounts[player] = count + 1
         data.Coins = data.Coins - cost
+        local ls = player:FindFirstChild('leaderstats')
+        if ls and ls:FindFirstChild('Coins') then
+            ls.Coins.Value = data.Coins
+            RE_UpdateCoins:FireClient(player, ls.Coins.Value)
+        end
         obj.Destroying:Connect(function()
             builtCounts[player] = math.max((builtCounts[player] or 1) - 1, 0)
         end)
