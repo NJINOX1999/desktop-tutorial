@@ -1,7 +1,8 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RE_BuybackOpen = Remotes:WaitForChild('RE_BuybackOpen')
-local RF_BuybackItem = Remotes:WaitForChild('RF_BuybackItem')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RemoteFunctions = ReplicatedStorage:WaitForChild('RemoteFunctions')
+local RE_BuybackOpen = RemoteEvents:WaitForChild('RE_BuybackOpen')
+local RF_BuybackItem = RemoteFunctions:WaitForChild('RF_BuybackItem')
 
 local gui = script.Parent
 local listFrame = gui:WaitForChild('ItemList')

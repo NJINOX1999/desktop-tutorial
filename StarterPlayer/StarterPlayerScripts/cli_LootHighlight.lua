@@ -1,6 +1,5 @@
-local Players = game:GetService('Players')
 local RS = game:GetService('ReplicatedStorage')
-local RE = RS.Remotes:WaitForChild('RE_LootPickup')
+local RE = RS.RemoteEvents:WaitForChild('RE_LootPickup')
 
 local function onPrompt(prompt)
     local loot = prompt.Parent

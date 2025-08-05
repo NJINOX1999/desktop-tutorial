@@ -1,7 +1,7 @@
 -- Crystal health manager
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Players = game:GetService('Players')
-local RE_UpdateCrystalHP = ReplicatedStorage.Remotes:WaitForChild('RE_UpdateCrystalHP')
+local RE_UpdateCrystalHP = ReplicatedStorage.RemoteEvents:WaitForChild('RE_UpdateCrystalHP')
 
 local Crystal = {}
 Crystal.Health = 1000
