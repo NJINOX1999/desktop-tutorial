@@ -12,7 +12,7 @@ xpBar.Parent = gui
 
 gui.Parent = player:WaitForChild('PlayerGui')
 
-local remotes = game.ReplicatedStorage:WaitForChild('Remotes')
-remotes.RE_NightStart.OnClientEvent:Connect(function()
+local RemoteEvents = game.ReplicatedStorage:WaitForChild('RemoteEvents')
+RemoteEvents:WaitForChild('RE_NightStart').OnClientEvent:Connect(function()
     waveLabel.Text = "Night incoming"
 end)
