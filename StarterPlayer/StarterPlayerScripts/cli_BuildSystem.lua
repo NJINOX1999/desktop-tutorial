@@ -9,10 +9,14 @@ local preview
 local canPlace = false
 local BuildValidator = require(ReplicatedStorage.Modules.mod_BuildValidator)
 
+local StarterGui = game:GetService('StarterGui')
+
 local BuildSystem = {}
 
 RE_BuildMessage.OnClientEvent:Connect(function(text)
-    warn(text)
+    pcall(function()
+        StarterGui:SetCore('SendNotification', {Title = 'Build', Text = text})
+    end)
 end)
 
 function BuildSystem:RequestBuild(itemId, cframe)
@@ -51,6 +55,15 @@ function BuildSystem:Update()
             if d:IsA('BasePart') then
                 d.Color = Color3.fromRGB(255, 0, 0)
             end
+        end
+    end
+end
+
+function BuildSystem:SetGhostColor(color)
+    if not preview then return end
+    for _, d in ipairs(preview:GetDescendants()) do
+        if d:IsA('BasePart') then
+            d.Color = color
         end
     end
 end

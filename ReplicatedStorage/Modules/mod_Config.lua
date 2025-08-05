@@ -39,7 +39,9 @@ Config.WaveDamageIncrement = 0.05
 Config.Weapons = {
     Hands = {Damage = 5, Range = 5},
     Stick = {Damage = 8, Range = 6},
-    Bow = {Damage = 15, Range = 60, Ammo = 1}
+    Bow = {Damage = 15, Range = 60, Ammo = 1},
+    Axe = {Damage = 10, Range = 6},
+    Pickaxe = {Damage = 12, Range = 5}
 }
 
 Config.MonsterTypes = {

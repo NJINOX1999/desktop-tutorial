@@ -2,6 +2,7 @@ local Players = game:GetService('Players')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Remotes = ReplicatedStorage:WaitForChild('Remotes')
 local RE_BuybackOpen = Remotes:WaitForChild('RE_BuybackOpen')
+local RE_ShowBuyback = Remotes:WaitForChild('RE_ShowBuyback')
 local RF_BuybackItem = Remotes:WaitForChild('RF_BuybackItem')
 local Config = require(ReplicatedStorage.Modules.mod_Config)
 
@@ -26,6 +27,7 @@ local function captureInventory(plr)
     end
     if #items > 0 then
         lost[plr] = items
+        RE_ShowBuyback:FireClient(plr)
     end
 end
 
