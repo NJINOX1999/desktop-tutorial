@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local RF_SetSlot = ReplicatedStorage.Remotes:WaitForChild('RF_SetDataSlot')
+local RF_SetSlot = ReplicatedStorage.RemoteFunctions:WaitForChild('RF_SetDataSlot')
 local player = game.Players.LocalPlayer
 
 local gui = Instance.new('ScreenGui')

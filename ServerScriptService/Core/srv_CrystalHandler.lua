@@ -1,10 +1,16 @@
+--!nolint UnknownType
+
+type Vector3 = any
+type Instance = any
+type CFrame = any
+
 -- Handles crystal placement and destruction events
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Players = game:GetService('Players')
 local CrystalModule = require(script.Parent.Parent.Modules.mod_Crystal)
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local rePlace = remotes:WaitForChild('RE_CrystalPlaced')
-local reAssign = remotes:WaitForChild('RE_AssignCrystal')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local rePlace = RemoteEvents:WaitForChild('RE_CrystalPlaced')
+local reAssign = RemoteEvents:WaitForChild('RE_AssignCrystal')
 
 local function spawnCrystal(pos)
     local crystal = Instance.new('Part')
