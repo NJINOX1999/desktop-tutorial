@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local Config = require(ReplicatedStorage.Config)
 
 local MonsterBuffService = {}
 
