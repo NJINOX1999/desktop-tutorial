@@ -1,7 +1,6 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RE_ToggleShop = remotes:WaitForChild('RE_ToggleShop')
-local RF_BuyItem = remotes:WaitForChild('RF_BuyItem')
+local RemoteFunctions = ReplicatedStorage:WaitForChild('RemoteFunctions')
+local RF_BuyItem = RemoteFunctions:WaitForChild('RF_BuyItem')
 local Locale = require(ReplicatedStorage.Modules.mod_Locale).en
 
 local gui = script.Parent
@@ -9,10 +8,6 @@ local btn = gui:WaitForChild('BuyAmmoButton')
 local message = gui:FindFirstChild('MessageLabel')
 
 gui.Enabled = false
-
-RE_ToggleShop.OnClientEvent:Connect(function()
-    gui.Enabled = not gui.Enabled
-end)
 
 btn.MouseButton1Click:Connect(function()
     local ok = RF_BuyItem:InvokeServer('Ammo')

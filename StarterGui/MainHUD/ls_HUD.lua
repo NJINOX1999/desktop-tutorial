@@ -3,12 +3,12 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local player = Players.LocalPlayer
 
 local Locale = require(ReplicatedStorage.Modules.mod_Locale).en
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
-local RE_UpdateCrystalHP = remotes:WaitForChild('RE_UpdateCrystalHP')
-local RE_UpdateAmmo = remotes:WaitForChild('RE_UpdateAmmo')
-local RE_UpdateWave = remotes:WaitForChild('RE_UpdateWave')
-local RE_TimeOfDayChanged = remotes:WaitForChild('RE_TimeOfDayChanged')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RE_UpdateCoins = RemoteEvents:WaitForChild('RE_UpdateCoins')
+local RE_UpdateCrystalHP = RemoteEvents:WaitForChild('RE_UpdateCrystalHP')
+local RE_UpdateAmmo = RemoteEvents:WaitForChild('RE_UpdateAmmo')
+local RE_UpdateWave = RemoteEvents:WaitForChild('RE_UpdateWave')
+local RE_TimeOfDayChanged = RemoteEvents:WaitForChild('RE_TimeOfDayChanged')
 
 local gui = script.Parent
 local coinLabel = gui:WaitForChild('CoinLabel')

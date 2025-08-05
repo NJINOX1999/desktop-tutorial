@@ -1,0 +1,7 @@
+[Existenz-Check] .... OK
+[BuildReport] ....... OK
+[Version] ........... OK
+[Lint] .............. OK
+[Runtime-Tests] ..... SKIP
+
+Ergebnis: WAHR
