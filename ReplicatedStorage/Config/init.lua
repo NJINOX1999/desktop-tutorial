@@ -1,6 +1,8 @@
 -- Shared configuration constants
 local Config = {}
 
+Config.Version = "v1.0.0"
+
 Config.Difficulty = "Normal" -- Easy, Normal, Hard
 Config.DifficultyModifiers = {
     -- difficulty multipliers applied to monster stats and XP gains
@@ -15,6 +17,10 @@ Config.BaseTurretLimit = 3
 Config.BuildPrices = {
     Basic = 10,
     Cannon = 20,
+}
+Config.StructureCosts = {
+    Wall = {Wood = 10},
+    Trap = {Wood = 5, Metal = 2},
 }
 Config.LevelXP = {100, 250, 450, 700, 1000}
 
@@ -39,7 +45,9 @@ Config.WaveDamageIncrement = 0.05
 Config.Weapons = {
     Hands = {Damage = 5, Range = 5},
     Stick = {Damage = 8, Range = 6},
-    Bow = {Damage = 15, Range = 60, Ammo = 1}
+    Bow = {Damage = 15, Range = 60, Ammo = 1},
+    Axe = {Damage = 10, Range = 6},
+    Pickaxe = {Damage = 12, Range = 5}
 }
 
 Config.MonsterTypes = {
