@@ -1,10 +1,16 @@
+--!nolint UnknownType
+
+type Vector3 = any
+type Instance = any
+type RaycastParams = any
+
 -- Handles weapon firing and damage application
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RE_Fire = remotes:WaitForChild('RE_FireWeapon')
-local RE_UpdateAmmo = remotes:WaitForChild('RE_UpdateAmmo')
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RE_Fire = RemoteEvents:WaitForChild('RE_FireWeapon')
+local RE_UpdateAmmo = RemoteEvents:WaitForChild('RE_UpdateAmmo')
+local Config = require(ReplicatedStorage.Config)
 
 local function getWeaponInfo(player)
     local weapon = (player._data and player._data.Weapon) or 'Hands'
