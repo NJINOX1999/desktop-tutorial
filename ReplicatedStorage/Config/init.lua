@@ -1,6 +1,8 @@
 -- Shared configuration constants
 local Config = {}
 
+Config.Version = "v1.0.0"
+
 Config.Difficulty = "Normal" -- Easy, Normal, Hard
 Config.DifficultyModifiers = {
     -- difficulty multipliers applied to monster stats and XP gains
