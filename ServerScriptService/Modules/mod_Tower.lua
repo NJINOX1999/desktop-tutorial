@@ -5,6 +5,7 @@ local AnimManager = require(ReplicatedStorage.Modules.mod_AnimationManager)
 
 local Tower = {}
 Tower.__index = Tower
+local activeTowers = {}
 
 function Tower.new(model)
     local self = setmetatable({}, Tower)
@@ -46,20 +47,29 @@ end
 function Tower.StartTracking(towerModel)
     towerModel:SetAttribute('IsBuilding', true)
     local tower = Tower.new(towerModel)
+    activeTowers[towerModel] = tower
     tower._conn = RunService.Heartbeat:Connect(function(dt)
         if towerModel.Parent then
             tower:step(dt)
         else
-            if tower._conn then
-                tower._conn:Disconnect()
-            end
+            Tower.StopTracking(towerModel)
         end
     end)
     towerModel.Destroying:Connect(function()
-        if tower._conn then
-            tower._conn:Disconnect()
-        end
+        Tower.StopTracking(towerModel)
     end)
+end
+
+function Tower.StopTracking(towerModel)
+    local tower = activeTowers[towerModel]
+    if not tower then
+        return
+    end
+    if tower._conn then
+        tower._conn:Disconnect()
+        tower._conn = nil
+    end
+    activeTowers[towerModel] = nil
 end
 
 return Tower
