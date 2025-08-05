@@ -1,8 +1,7 @@
-[VERIFY]
-BuildReport vorhanden .....   OK
-Version v1.0.0 ............   OK
-Ordnerstruktur ............   OK
-Runtime-Tests .............   OK
-Luau Lint .................   OK
+[Existenz-Check] .... OK
+[BuildReport] ....... OK
+[Version] ........... OK
+[Lint] .............. OK
+[Runtime-Tests] ..... SKIP
 
 Ergebnis: WAHR
