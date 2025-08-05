@@ -4,6 +4,8 @@ local RE_PlayerSpawnRequest = remotes:WaitForChild('RE_PlayerSpawnRequest')
 local RE_SetDifficulty = remotes:WaitForChild('RE_SetDifficulty')
 local RE_GameOver = remotes:WaitForChild('RE_GameOver')
 
+-- TODO: implement save slot selection and host-controlled lobby start for up to 6 players
+
 local gui = script.Parent
 local playButton = gui:WaitForChild('PlayButton')
 
