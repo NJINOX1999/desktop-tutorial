@@ -6,9 +6,9 @@ Config.Version = "v1.0.0"
 Config.Difficulty = "Normal" -- Easy, Normal, Hard
 Config.DifficultyModifiers = {
     -- difficulty multipliers applied to monster stats and XP gains
-    Easy = {SpawnCount = 1, Damage = 0.5, Health = 0.7, XP = 0.5},
+    Easy = {SpawnCount = 0.5, Damage = 0.5, Health = 0.5, XP = 0.5},
     Normal = {SpawnCount = 1, Damage = 1, Health = 1, XP = 1},
-    Hard = {SpawnCount = 1, Damage = 1.5, Health = 1.5, XP = 1.5},
+    Hard = {SpawnCount = 1.5, Damage = 1.5, Health = 1.5, XP = 1.5},
 }
 
 Config.DayLength = 600

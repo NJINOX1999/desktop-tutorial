@@ -16,10 +16,11 @@ local spawnFolder = workspace:FindFirstChild('SpawnPoints')
 local function getWaveInfo(index)
     local diff = Config.DifficultyModifiers[Config.Difficulty] or {}
     local base = Config.WaveBaseCount + index * Config.WaveCountIncrement
-    local count = math.floor(base * (diff.SpawnCount or 1))
+    local count = math.max(1, math.floor(base * (diff.SpawnCount or 1)))
     local hpMul = (1 + index * Config.WaveHealthIncrement) * (diff.Health or 1)
     local dmgMul = (1 + index * Config.WaveDamageIncrement) * (diff.Damage or 1)
-    return {count = count, hpMul = hpMul, dmgMul = dmgMul, boss = index % 10 == 0}
+    local bossWave = index > 0 and index % 10 == 0
+    return {count = count, hpMul = hpMul, dmgMul = dmgMul, boss = bossWave}
 end
 
 function WaveManager:SpawnWave(index)
@@ -52,8 +53,17 @@ function WaveManager:SpawnWave(index)
         if bossTemplate and #spawnFolder:GetChildren() > 0 then
             local spawnPoint = spawnFolder:GetChildren()[1]
             local boss = bossTemplate:Clone()
+            boss.Name = 'Boss'
             boss.Parent = workspace.RuntimeObjects
             boss.HumanoidRootPart.CFrame = spawnPoint.CFrame
+            local hum = boss:FindFirstChildOfClass('Humanoid')
+            if hum then
+                hum.MaxHealth = hum.MaxHealth * info.hpMul * 5
+                hum.Health = hum.MaxHealth
+                hum.WalkSpeed = hum.WalkSpeed * 1.2
+                boss:SetAttribute('DamageMul', (boss:GetAttribute('DamageMul') or 1) * info.dmgMul * 5)
+                MonsterBuffService.apply(boss)
+            end
             MonsterAI.new(boss):Start()
         end
     end

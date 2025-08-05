@@ -38,10 +38,21 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
         end
         local cost = Config.BuildPrices[itemId]
         if not cost then return end
-        if data.Coins < cost then
+        local ls = player:FindFirstChild('leaderstats')
+        local coins = data.Coins
+        if ls and ls:FindFirstChild('Coins') then
+            coins = ls.Coins.Value
+        end
+        if coins < cost then
             RE_BuildMessage:FireClient(player, 'Not enough coins')
             return
         end
+        coins = coins - cost
+        data.Coins = coins
+        if ls and ls:FindFirstChild('Coins') then
+            ls.Coins.Value = coins
+        end
+        RE_UpdateCoins:FireClient(player, coins)
         local obj = tower:Clone()
         obj:SetAttribute('IsBuilding', true)
         if not obj:FindFirstChild('Health') then
@@ -54,12 +65,6 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
         obj:SetPrimaryPartCFrame(CFrame.new(pos) * CFrame.Angles(math.rad(rot.X), math.rad(rot.Y), math.rad(rot.Z)))
         Tower.StartTracking(obj)
         builtCounts[player] = count + 1
-        data.Coins = data.Coins - cost
-        local ls = player:FindFirstChild('leaderstats')
-        if ls and ls:FindFirstChild('Coins') then
-            ls.Coins.Value = data.Coins
-            RE_UpdateCoins:FireClient(player, ls.Coins.Value)
-        end
         obj.Destroying:Connect(function()
             builtCounts[player] = math.max((builtCounts[player] or 1) - 1, 0)
         end)

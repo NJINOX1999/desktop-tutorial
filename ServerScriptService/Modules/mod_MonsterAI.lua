@@ -4,7 +4,6 @@ local PathfindingService = game:GetService('PathfindingService')
 
 local Crystal = require(script.Parent.mod_Crystal)
 local DropTable = require(script.Parent.mod_DropTable)
-local Utilities = require(script.Parent.mod_Utilities)
 local AnimUtil = require(game:GetService('ReplicatedStorage').Modules.mod_AnimationManager)
 local Config = require(game:GetService('ReplicatedStorage').Config)
 
@@ -44,7 +43,7 @@ function MonsterAI.new(model)
                 end)
             end
             for _, plr in ipairs(Players:GetPlayers()) do
-                Utilities.addXP(plr, 5)
+                _G.EventBus.Fire('MonsterKilled', plr, 5)
             end
         end)
         _G.EventBus.Bind('CrystalDestroyed', function()
