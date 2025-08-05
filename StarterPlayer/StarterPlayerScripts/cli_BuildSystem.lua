@@ -21,8 +21,12 @@ end)
 
 function BuildSystem:RequestBuild(itemId, cframe)
     if canPlace then
-        BuildRequest:FireServer(itemId, cframe.Position, cframe.Rotation)
-        if preview then preview:Destroy() preview = nil end
+        local rx, ry, rz = cframe:ToOrientation()
+        BuildRequest:FireServer(itemId, cframe.Position, Vector3.new(math.deg(rx), math.deg(ry), math.deg(rz)))
+        if preview then
+            preview:Destroy()
+            preview = nil
+        end
     end
 end
 

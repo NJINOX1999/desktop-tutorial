@@ -8,7 +8,6 @@ local RE_RequestHeal = RemoteEvents:WaitForChild('RE_RequestHeal')
 local RE_PlayerSpawnRequest = RemoteEvents:WaitForChild('RE_PlayerSpawnRequest')
 
 local downed = {}
-local reviveActions = {}
 local healCooldowns = {}
 
 local function revive(target, healer)

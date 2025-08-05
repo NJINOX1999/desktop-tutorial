@@ -1,4 +1,3 @@
-local Players = game:GetService('Players')
 local RS = game:GetService('ReplicatedStorage')
 local RE = RS.RemoteEvents:WaitForChild('RE_LootPickup')
 

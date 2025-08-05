@@ -17,6 +17,7 @@ local function getAnimator(obj)
     elseif obj:IsA('Humanoid') or obj:IsA('AnimationController') then
         return obj:FindFirstChildOfClass('Animator') or Instance.new('Animator', obj)
     end
+    return nil
 end
 
 function AnimationManager.get(name)
@@ -29,6 +30,7 @@ function AnimationManager.loadTrack(obj, name)
     if anim and animator then
         return animator:LoadAnimation(anim)
     end
+    return nil
 end
 
 function AnimationManager.play(obj, name)
