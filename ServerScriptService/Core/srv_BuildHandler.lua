@@ -12,31 +12,30 @@ local Tower = require(script.Parent.Parent.Modules.mod_Tower)
 
 local builtCounts = {}
 local Players = game:GetService('Players')
+local structuresFolder = ServerStorage.Assets:FindFirstChild('Structures')
 
 BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     if typeof(pos) ~= 'Vector3' or typeof(rot) ~= 'Vector3' or type(itemId) ~= 'string' then
         return
     end
-    local data = player._data or {Level = 1, Coins = 0}
-    local level = player:GetAttribute('Level') or data.Level or 1
-    local maxLimit = Config.BaseTurretLimit + math.max(0, level - 1)
-    local count = builtCounts[player] or 0
-    if count >= maxLimit then
-        return
-    end
+    local data = player._data or {Level = 1, Coins = 0, Inventory = {}}
     if not BuildValidator:CanPlace(pos) then
-        return
-    end
-    local cost = Config.BuildPrices[itemId]
-    if not cost then
-        return
-    end
-    if not data or data.Coins < cost then
-        RE_BuildMessage:FireClient(player, 'Not enough coins')
         return
     end
     local tower = ServerStorage.Assets.Towers:FindFirstChild(itemId)
     if tower then
+        local level = player:GetAttribute('Level') or data.Level or 1
+        local maxLimit = Config.BaseTurretLimit + math.max(0, level - 1)
+        local count = builtCounts[player] or 0
+        if count >= maxLimit then
+            return
+        end
+        local cost = Config.BuildPrices[itemId]
+        if not cost then return end
+        if data.Coins < cost then
+            RE_BuildMessage:FireClient(player, 'Not enough coins')
+            return
+        end
         local obj = tower:Clone()
         obj:SetAttribute('IsBuilding', true)
         if not obj:FindFirstChild('Health') then
@@ -58,6 +57,30 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
         obj.Destroying:Connect(function()
             builtCounts[player] = math.max((builtCounts[player] or 1) - 1, 0)
         end)
+    elseif structuresFolder then
+        local structure = structuresFolder:FindFirstChild(itemId)
+        if not structure then return end
+        local requirements = Config.StructureCosts[itemId]
+        if not requirements then return end
+        for res, amt in pairs(requirements) do
+            if (data.Inventory[res] or 0) < amt then
+                RE_BuildMessage:FireClient(player, 'Need ' .. res)
+                return
+            end
+        end
+        for res, amt in pairs(requirements) do
+            data.Inventory[res] = data.Inventory[res] - amt
+        end
+        local obj = structure:Clone()
+        obj:SetAttribute('IsBuilding', true)
+        if not obj:FindFirstChild('Health') then
+            local h = Instance.new('IntValue')
+            h.Name = 'Health'
+            h.Value = 100
+            h.Parent = obj
+        end
+        obj.Parent = workspace.RuntimeObjects
+        obj:SetPrimaryPartCFrame(CFrame.new(pos) * CFrame.Angles(math.rad(rot.X), math.rad(rot.Y), math.rad(rot.Z)))
     end
 end)
 

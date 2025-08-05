@@ -16,6 +16,10 @@ Config.BuildPrices = {
     Basic = 10,
     Cannon = 20,
 }
+Config.StructureCosts = {
+    Wall = {Wood = 10},
+    Trap = {Wood = 5, Metal = 2},
+}
 Config.LevelXP = {100, 250, 450, 700, 1000}
 
 -- gameplay rules
