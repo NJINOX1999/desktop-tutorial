@@ -1,3 +1,7 @@
+--!nolint UnknownType
+
+type Instance = any
+
 -- Handles loot pickup requests from clients
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')

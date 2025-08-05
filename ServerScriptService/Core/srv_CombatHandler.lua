@@ -1,3 +1,9 @@
+--!nolint UnknownType
+
+type Vector3 = any
+type Instance = any
+type RaycastParams = any
+
 -- Handles weapon firing and damage application
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 

@@ -1,3 +1,9 @@
+--!nolint UnknownType
+
+type Vector3 = any
+type Instance = any
+type RaycastParams = any
+
 -- Handles build requests from clients
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerStorage = game:GetService('ServerStorage')

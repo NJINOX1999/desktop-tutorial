@@ -1,3 +1,9 @@
+--!nolint UnknownType
+
+type Vector3 = any
+type Instance = any
+type CFrame = any
+
 -- Handles crystal placement and destruction events
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Players = game:GetService('Players')

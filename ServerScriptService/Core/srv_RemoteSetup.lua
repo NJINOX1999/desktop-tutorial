@@ -1,3 +1,7 @@
+--!nolint UnknownType
+
+type Instance = any
+
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local function load(folderName)

@@ -1,3 +1,7 @@
+--!nolint UnknownType
+
+type Instance = any
+
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local AnimationUtil = require(ReplicatedStorage.Modules.mod_AnimationManager)
 local folder = ReplicatedStorage.Assets:FindFirstChild('Animations')

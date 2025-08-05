@@ -1,3 +1,7 @@
+--!nolint UnknownType
+
+type Instance = any
+
 local Players = game:GetService('Players')
 Players.CharacterAutoLoads = false
 local Config = require(game:GetService('ReplicatedStorage').Config)

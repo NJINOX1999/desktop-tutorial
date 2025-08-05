@@ -3,4 +3,6 @@ BuildReport vorhanden .....   OK
 Version v1.0.0 ............   OK
 Ordnerstruktur ............   OK
 Runtime-Tests .............   OK
-Luau Lint .................   FAIL (Unknown Roblox globals; add Roblox type stubs in `types/roblox.d.lua` and run analyzer with `--defs`.)
+Luau Lint .................   OK
+
+Ergebnis: WAHR
