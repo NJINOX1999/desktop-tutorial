@@ -1,11 +1,11 @@
 local Players = game:GetService('Players')
 Players.CharacterAutoLoads = false
-local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
+local Config = require(game:GetService('ReplicatedStorage').Config)
 local Crystal = require(script.Parent.Parent.Modules.mod_Crystal)
-local Remotes = game:GetService('ReplicatedStorage'):WaitForChild('Remotes')
-local RE_RequestRevive = Remotes:WaitForChild('RE_RequestRevive')
-local RE_RequestHeal = Remotes:WaitForChild('RE_RequestHeal')
-local RE_PlayerSpawnRequest = Remotes:WaitForChild('RE_PlayerSpawnRequest')
+local RemoteEvents = game:GetService('ReplicatedStorage'):WaitForChild('RemoteEvents')
+local RE_RequestRevive = RemoteEvents:WaitForChild('RE_RequestRevive')
+local RE_RequestHeal = RemoteEvents:WaitForChild('RE_RequestHeal')
+local RE_PlayerSpawnRequest = RemoteEvents:WaitForChild('RE_PlayerSpawnRequest')
 
 local downed = {}
 local reviveActions = {}

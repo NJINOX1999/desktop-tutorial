@@ -1,8 +1,8 @@
 -- Client-side build placement preview and request
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
-local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local BuildRequest = RemoteEvents:WaitForChild('RE_BuildRequest')
+local RE_BuildMessage = RemoteEvents:WaitForChild('RE_BuildMessage')
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 local preview

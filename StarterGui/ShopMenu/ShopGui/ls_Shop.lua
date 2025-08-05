@@ -1,6 +1,6 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RF_BuyItem = remotes:WaitForChild('RF_BuyItem')
+local RemoteFunctions = ReplicatedStorage:WaitForChild('RemoteFunctions')
+local RF_BuyItem = RemoteFunctions:WaitForChild('RF_BuyItem')
 local Locale = require(ReplicatedStorage.Modules.mod_Locale).en
 
 local gui = script.Parent

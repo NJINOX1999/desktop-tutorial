@@ -4,7 +4,7 @@ local player = Players.LocalPlayer
 
 player.CharacterAdded:Connect(function()
     local gui = player:WaitForChild('PlayerGui')
-    local hud = gui:FindFirstChild('ScreenGui_HUD')
+    local hud = gui:FindFirstChild('MainHUD')
     if hud then
         hud.Enabled = true
     end

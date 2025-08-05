@@ -1,10 +1,11 @@
 local Players = game:GetService('Players')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RE_BuybackOpen = Remotes:WaitForChild('RE_BuybackOpen')
-local RE_ShowBuyback = Remotes:WaitForChild('RE_ShowBuyback')
-local RF_BuybackItem = Remotes:WaitForChild('RF_BuybackItem')
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RemoteFunctions = ReplicatedStorage:WaitForChild('RemoteFunctions')
+local RE_BuybackOpen = RemoteEvents:WaitForChild('RE_BuybackOpen')
+local RE_ShowBuyback = RemoteEvents:WaitForChild('RE_ShowBuyback')
+local RF_BuybackItem = RemoteFunctions:WaitForChild('RF_BuybackItem')
+local Config = require(ReplicatedStorage.Config)
 
 local lost = {}
 

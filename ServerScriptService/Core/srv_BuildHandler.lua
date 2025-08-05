@@ -2,17 +2,17 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerStorage = game:GetService('ServerStorage')
 
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
-local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
-local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local BuildRequest = RemoteEvents:WaitForChild('RE_BuildRequest')
+local RE_BuildMessage = RemoteEvents:WaitForChild('RE_BuildMessage')
+local RE_UpdateCoins = RemoteEvents:WaitForChild('RE_UpdateCoins')
 local BuildValidator = require(ReplicatedStorage.Modules.mod_BuildValidator)
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local Config = require(ReplicatedStorage.Config)
 local Tower = require(script.Parent.Parent.Modules.mod_Tower)
 
 local builtCounts = {}
 local Players = game:GetService('Players')
-local structuresFolder = ServerStorage.Assets:FindFirstChild('Structures')
+local structuresFolder = ServerStorage:FindFirstChild('Structures')
 
 BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     if typeof(pos) ~= 'Vector3' or typeof(rot) ~= 'Vector3' or type(itemId) ~= 'string' then
@@ -22,7 +22,7 @@ BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
     if not BuildValidator:CanPlace(pos) then
         return
     end
-    local tower = ServerStorage.Assets.Towers:FindFirstChild(itemId)
+    local tower = ServerStorage.Towers:FindFirstChild(itemId)
     if tower then
         local level = player:GetAttribute('Level') or data.Level or 1
         local maxLimit = Config.BaseTurretLimit + math.max(0, level - 1)

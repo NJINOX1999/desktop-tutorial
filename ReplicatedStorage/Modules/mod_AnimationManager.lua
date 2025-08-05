@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ContentProvider = game:GetService('ContentProvider')
 
-local folder = ReplicatedStorage:WaitForChild('Animations')
+local folder = ReplicatedStorage.Assets:WaitForChild('Animations')
 local AnimationManager = {}
 
 local function getAnimator(obj)

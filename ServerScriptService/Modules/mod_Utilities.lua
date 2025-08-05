@@ -9,7 +9,7 @@ function Utilities.printTable(tbl, indent)
 end
 
 function Utilities.addXP(player, amount)
-    local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
+    local Config = require(game:GetService('ReplicatedStorage').Config)
     local LevelService = require(script.Parent.mod_LevelService)
     local data = player._data
     if data then
