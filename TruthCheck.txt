@@ -1,0 +1,7 @@
+[Existenz-Check] .... OK
+[BuildReport] ....... OK
+[Version] ........... OK
+[Lint] .............. FAIL (226 errors; e.g., ServerScriptService/Core/srv_BuildHandler.lua:11 Unknown global 'script')
+[Runtime] ........... FAIL (roblox-cli not available)
+
+Ergebnis: FALSCH

@@ -1,6 +1,6 @@
 local Players = game:GetService('Players')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local RE_Fire = ReplicatedStorage.Remotes:WaitForChild('RE_FireWeapon')
+local RE_Fire = ReplicatedStorage.RemoteEvents:WaitForChild('RE_FireWeapon')
 local AnimManager = require(ReplicatedStorage.Modules.mod_AnimationManager)
 
 local player = Players.LocalPlayer

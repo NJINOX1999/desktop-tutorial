@@ -3,9 +3,9 @@ local ServerStorage = game:GetService('ServerStorage')
 
 local MonsterAI = require(script.Parent.Parent.Modules.mod_MonsterAI)
 local MonsterBuffService = require(script.Parent.Parent.Modules.mod_MonsterBuffService)
-local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
-local remotes = game:GetService('ReplicatedStorage'):WaitForChild('Remotes')
-local RE_UpdateWave = remotes:WaitForChild('RE_UpdateWave')
+local Config = require(game:GetService('ReplicatedStorage').Config)
+local RemoteEvents = game:GetService('ReplicatedStorage'):WaitForChild('RemoteEvents')
+local RE_UpdateWave = RemoteEvents:WaitForChild('RE_UpdateWave')
 
 local WaveManager = {}
 WaveManager.currentWave = 0
@@ -30,7 +30,7 @@ function WaveManager:SpawnWave(index)
         local spawnPoint = spawnFolder:GetChildren()[((i-1) % #spawnFolder:GetChildren())+1]
         local tName = types[((i-1) % #types) + 1]
         local typeInfo = Config.MonsterTypes[tName] or Config.MonsterTypes.Default
-        local template = ServerStorage.Assets.Monsters:FindFirstChild(typeInfo.Model)
+        local template = ServerStorage.Enemies:FindFirstChild(typeInfo.Model)
         if template and spawnPoint then
             local monster = template:Clone()
             monster.Name = tName
@@ -48,7 +48,7 @@ function WaveManager:SpawnWave(index)
         end
     end
     if info.boss then
-        local bossTemplate = ServerStorage.Assets.Bosses:FindFirstChild('Boss')
+        local bossTemplate = ServerStorage.Enemies:FindFirstChild('Boss')
         if bossTemplate and #spawnFolder:GetChildren() > 0 then
             local spawnPoint = spawnFolder:GetChildren()[1]
             local boss = bossTemplate:Clone()

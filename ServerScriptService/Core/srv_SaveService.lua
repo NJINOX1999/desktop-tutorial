@@ -1,14 +1,15 @@
 local Players = game:GetService('Players')
 
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local Config = require(ReplicatedStorage.Config)
 local DataStore2 = require(script.Parent.Parent.Modules.mod_DataStore2)
 
 local SAVE_INTERVAL = 120
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RF_SetSlot = remotes:WaitForChild('RF_SetDataSlot')
-local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
-local RE_UpdateAmmo = remotes:WaitForChild('RE_UpdateAmmo')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RemoteFunctions = ReplicatedStorage:WaitForChild('RemoteFunctions')
+local RF_SetSlot = RemoteFunctions:WaitForChild('RF_SetDataSlot')
+local RE_UpdateCoins = RemoteEvents:WaitForChild('RE_UpdateCoins')
+local RE_UpdateAmmo = RemoteEvents:WaitForChild('RE_UpdateAmmo')
 
 local function getDefaultData()
     return {
