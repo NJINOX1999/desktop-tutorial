@@ -1,7 +1,7 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ContentProvider = game:GetService('ContentProvider')
 
-local folder = ReplicatedStorage:WaitForChild('Animations')
+local folder = ReplicatedStorage.Assets:WaitForChild('Animations')
 local AnimationManager = {}
 
 local function getAnimator(obj)
@@ -17,6 +17,7 @@ local function getAnimator(obj)
     elseif obj:IsA('Humanoid') or obj:IsA('AnimationController') then
         return obj:FindFirstChildOfClass('Animator') or Instance.new('Animator', obj)
     end
+    return nil
 end
 
 function AnimationManager.get(name)
@@ -29,6 +30,7 @@ function AnimationManager.loadTrack(obj, name)
     if anim and animator then
         return animator:LoadAnimation(anim)
     end
+    return nil
 end
 
 function AnimationManager.play(obj, name)

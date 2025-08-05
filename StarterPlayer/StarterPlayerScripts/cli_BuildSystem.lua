@@ -1,24 +1,32 @@
 -- Client-side build placement preview and request
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
-local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local BuildRequest = RemoteEvents:WaitForChild('RE_BuildRequest')
+local RE_BuildMessage = RemoteEvents:WaitForChild('RE_BuildMessage')
 local player = game.Players.LocalPlayer
 local mouse = player:GetMouse()
 local preview
 local canPlace = false
 local BuildValidator = require(ReplicatedStorage.Modules.mod_BuildValidator)
 
+local StarterGui = game:GetService('StarterGui')
+
 local BuildSystem = {}
 
 RE_BuildMessage.OnClientEvent:Connect(function(text)
-    warn(text)
+    pcall(function()
+        StarterGui:SetCore('SendNotification', {Title = 'Build', Text = text})
+    end)
 end)
 
 function BuildSystem:RequestBuild(itemId, cframe)
     if canPlace then
-        BuildRequest:FireServer(itemId, cframe.Position, cframe.Rotation)
-        if preview then preview:Destroy() preview = nil end
+        local rx, ry, rz = cframe:ToOrientation()
+        BuildRequest:FireServer(itemId, cframe.Position, Vector3.new(math.deg(rx), math.deg(ry), math.deg(rz)))
+        if preview then
+            preview:Destroy()
+            preview = nil
+        end
     end
 end
 
@@ -51,6 +59,15 @@ function BuildSystem:Update()
             if d:IsA('BasePart') then
                 d.Color = Color3.fromRGB(255, 0, 0)
             end
+        end
+    end
+end
+
+function BuildSystem:SetGhostColor(color)
+    if not preview then return end
+    for _, d in ipairs(preview:GetDescendants()) do
+        if d:IsA('BasePart') then
+            d.Color = color
         end
     end
 end

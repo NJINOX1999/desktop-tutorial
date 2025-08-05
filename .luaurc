@@ -1,0 +1,19 @@
+{
+  "globals": [
+    "game",
+    "workspace",
+    "script",
+    "Enum",
+    "task",
+    "wait",
+    "Vector3",
+    "CFrame",
+    "Instance",
+    "RaycastParams",
+    "UDim2",
+    "Color3",
+    "Region3",
+    "tick",
+    "require"
+  ]
+}
