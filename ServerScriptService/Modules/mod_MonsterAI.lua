@@ -19,11 +19,12 @@ function MonsterAI.new(model)
     self._target = nil
     self._lastPathCompute = 0
     self.crystalBuffed = false
+    self._connections = {}
     if self.humanoid then
         self.walkAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Walk')
         self.attackAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Attack')
         self.deathAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Death')
-        self.humanoid.Died:Connect(function()
+        table.insert(self._connections, self.humanoid.Died:Connect(function()
             if self.deathAnim then self.deathAnim:Play() end
             local loots = DropTable:getDrops(model.Name)
             for _, loot in ipairs(loots) do
@@ -46,8 +47,8 @@ function MonsterAI.new(model)
             for _, plr in ipairs(Players:GetPlayers()) do
                 Utilities.addXP(plr, 5)
             end
-        end)
-        _G.EventBus.Bind('CrystalDestroyed', function()
+        end))
+        table.insert(self._connections, _G.EventBus.Bind('CrystalDestroyed', function()
             if self.humanoid and self.humanoid.Health > 0 and not self.crystalBuffed then
                 self.humanoid.WalkSpeed = self.humanoid.WalkSpeed * Config.CrystalBuffMultiplier
                 self.humanoid.MaxHealth = self.humanoid.MaxHealth * Config.CrystalBuffMultiplier
@@ -56,8 +57,8 @@ function MonsterAI.new(model)
                 self.model:SetAttribute('DamageMul', mul * Config.CrystalBuffDamageMultiplier)
                 self.crystalBuffed = true
             end
-        end)
-        _G.EventBus.Bind('CrystalPlaced', function()
+        end))
+        table.insert(self._connections, _G.EventBus.Bind('CrystalPlaced', function()
             if self.humanoid and self.humanoid.Health > 0 and self.crystalBuffed then
                 self.humanoid.WalkSpeed = self.humanoid.WalkSpeed / Config.CrystalBuffMultiplier
                 self.humanoid.MaxHealth = self.humanoid.MaxHealth / Config.CrystalBuffMultiplier
@@ -66,12 +67,19 @@ function MonsterAI.new(model)
                 self.model:SetAttribute('DamageMul', mul / Config.CrystalBuffDamageMultiplier)
                 self.crystalBuffed = false
             end
-        end)
+        end))
         if _G.crystalLost then
             self.crystalBuffed = true
         end
         if self.walkAnim then self.walkAnim:Play() end
     end
+    model.Destroying:Connect(function()
+        for _, conn in ipairs(self._connections) do
+            conn:Disconnect()
+        end
+        self._connections = nil
+        self.humanoid = nil
+    end)
     return self
 end
 
