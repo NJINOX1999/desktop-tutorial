@@ -12,6 +12,10 @@ local CYCLE_LENGTH = DAY_LENGTH + NIGHT_LENGTH
 local timeOfDay = 0
 local isNight = false
 _G.isNight = false
+local function IsNight()
+    return isNight
+end
+_G.IsNight = IsNight
 local gameRunning = true
 
 -- simple event dispatcher stored in _G

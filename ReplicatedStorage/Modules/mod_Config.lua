@@ -21,7 +21,7 @@ Config.LevelXP = {100, 250, 450, 700, 1000}
 
 -- gameplay rules
 Config.VillageRadius = 50 -- spawn monsters outside this radius
-Config.DaySpawnInterval = 30
+Config.DaySpawnInterval = 90
 Config.DaySpawnChance = 0.05
 Config.NightSpawnInterval = 10
 Config.NightSpawnChance = 1
@@ -32,8 +32,8 @@ Config.ReviveTime = 15
 Config.HealCooldown = 60
 Config.HealTime = 15
 
-Config.WaveBaseCount = 5
-Config.WaveCountIncrement = 2
+Config.WaveBaseCount = 20
+Config.WaveScale = 0.05
 Config.WaveHealthIncrement = 0.1
 Config.WaveDamageIncrement = 0.05
 
