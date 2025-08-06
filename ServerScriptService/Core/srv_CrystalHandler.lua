@@ -1,5 +1,6 @@
 -- Handles crystal placement and destruction events
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local ServerStorage = game:GetService('ServerStorage')
 local Players = game:GetService('Players')
 local CrystalModule = require(script.Parent.Parent.Modules.mod_Crystal)
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
@@ -14,14 +15,23 @@ local function spawnCrystal(pos)
     crystal.CFrame = CFrame.new(pos)
     crystal.Parent = workspace
     CrystalModule:Reset()
+    if _G.GameState then
+        _G.GameState.CrystalDestroyed = false
+    end
+    if _G.EnemyBuffService then
+        _G.EnemyBuffService.BoostActive = false
+    end
     _G.EventBus.Fire('CrystalPlaced')
 end
 
 local function giveCrystalItem(player)
-    local tool = Instance.new('Tool')
-    tool.Name = 'CrystalItem'
-    tool.RequiresHandle = false
-    tool.Parent = player:FindFirstChildOfClass('Backpack') or player:WaitForChild('Backpack')
+    local tools = ServerStorage:FindFirstChild('Tools')
+    local template = tools and tools:FindFirstChild('CrystalTool')
+    local backpack = player:FindFirstChildOfClass('Backpack') or player:WaitForChild('Backpack')
+    if template and backpack then
+        local tool = template:Clone()
+        tool.Parent = backpack
+    end
 end
 
 rePlace.OnServerEvent:Connect(function(player, pos)
@@ -33,9 +43,11 @@ rePlace.OnServerEvent:Connect(function(player, pos)
 end)
 
 _G.EventBus.Bind('CrystalDestroyed', function()
-    if CrystalModule:ShouldGameOver() then
-        _G.EventBus.Fire('GameOver')
-        return
+    if _G.GameState then
+        _G.GameState.CrystalDestroyed = true
+    end
+    if _G.EnemyBuffService then
+        _G.EnemyBuffService.BoostActive = true
     end
     local host = Players:GetPlayers()[1]
     if host then
