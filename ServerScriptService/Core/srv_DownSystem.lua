@@ -1,17 +1,16 @@
 local Players = game:GetService('Players')
 Players.CharacterAutoLoads = false
 local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
-local Crystal = require(script.Parent.Parent.Modules.mod_Crystal)
 local Remotes = game:GetService('ReplicatedStorage'):WaitForChild('Remotes')
-local RE_RequestRevive = Remotes:WaitForChild('RE_RequestRevive')
-local RE_RequestHeal = Remotes:WaitForChild('RE_RequestHeal')
+local RE_StartHeal = Remotes:WaitForChild('RE_StartHeal')
+local RE_StopHeal = Remotes:WaitForChild('RE_StopHeal')
 local RE_PlayerSpawnRequest = Remotes:WaitForChild('RE_PlayerSpawnRequest')
 
 local downed = {}
-local reviveActions = {}
+local actions = {}
 local healCooldowns = {}
 
-local function revive(target, healer)
+local function revive(target)
     local info = downed[target]
     if not info then return end
     downed[target] = nil
@@ -20,6 +19,29 @@ local function revive(target, healer)
         h.PlatformStand = false
         h.Health = h.MaxHealth
     end
+end
+
+local function startRevive(healer, target)
+    if healer == target or downed[healer] or not downed[target] then return end
+    if not (healer.Character and target.Character) then return end
+    local hRoot = healer.Character:FindFirstChild('HumanoidRootPart')
+    local tRoot = target.Character:FindFirstChild('HumanoidRootPart')
+    if not hRoot or not tRoot then return end
+    if (hRoot.Position - tRoot.Position).Magnitude > 10 then return end
+    actions[healer] = {target = target, start = os.clock(), mode = 'revive'}
+end
+
+local function tryHeal(healer, target)
+    if healer == target or downed[healer] or downed[target] then return end
+    if healCooldowns[target] and os.clock() - healCooldowns[target] < Config.HealCooldown then return end
+    if not (healer.Character and target.Character) then return end
+    local hRoot = healer.Character:FindFirstChild('HumanoidRootPart')
+    local tRoot = target.Character:FindFirstChild('HumanoidRootPart')
+    local hum = target.Character:FindFirstChildOfClass('Humanoid')
+    if not hRoot or not tRoot or not hum then return end
+    if hum.Health <= 0 or hum.Health >= hum.MaxHealth * 0.5 then return end
+    if (hRoot.Position - tRoot.Position).Magnitude > 10 then return end
+    actions[healer] = {target = target, start = os.clock(), mode = 'heal'}
 end
 
 local function onCharacterAdded(player, char)
@@ -46,35 +68,51 @@ RE_PlayerSpawnRequest.OnServerEvent:Connect(function(plr)
     end
 end)
 
-RE_RequestRevive.OnServerEvent:Connect(function(healer, target)
+RE_StartHeal.OnServerEvent:Connect(function(healer, target)
     if typeof(target) ~= 'Instance' or not target:IsA('Player') then return end
-    local info = downed[target]
-    if not info then return end
-    if (healer.Character and healer.Character:FindFirstChild('HumanoidRootPart')
-        and target.Character and target.Character:FindFirstChild('HumanoidRootPart')) then
-        if (healer.Character.HumanoidRootPart.Position - target.Character.HumanoidRootPart.Position).Magnitude < 6 then
-            task.delay(Config.ReviveTime, function()
-                revive(target, healer)
-            end)
-        end
+    if downed[target] then
+        startRevive(healer, target)
+    else
+        tryHeal(healer, target)
     end
 end)
 
-RE_RequestHeal.OnServerEvent:Connect(function(healer, target)
-    if healCooldowns[healer] and os.clock() - healCooldowns[healer] < Config.HealCooldown then return end
-    if target and target.Character and target.Character:FindFirstChildOfClass('Humanoid') then
-        local hum = target.Character.Humanoid
-        local start = os.clock()
-        task.delay(Config.HealTime, function()
-            if os.clock() - start >= Config.HealTime and hum.Health > 0 then
-                hum.Health = hum.MaxHealth
-                healCooldowns[healer] = os.clock()
-            end
-        end)
-    end
+RE_StopHeal.OnServerEvent:Connect(function(healer)
+    actions[healer] = nil
 end)
 
 _G.EventBus.Bind('Heartbeat', function()
+    for healer, action in pairs(actions) do
+        local target = action.target
+        if not target or not target.Character or not healer.Character then
+            actions[healer] = nil
+        else
+            local hRoot = healer.Character:FindFirstChild('HumanoidRootPart')
+            local tRoot = target.Character:FindFirstChild('HumanoidRootPart')
+            local hum = target.Character:FindFirstChildOfClass('Humanoid')
+            if not hRoot or not tRoot or not hum then
+                actions[healer] = nil
+            elseif (hRoot.Position - tRoot.Position).Magnitude > 10 then
+                actions[healer] = nil
+            elseif action.mode == 'revive' then
+                if not downed[target] then
+                    actions[healer] = nil
+                elseif os.clock() - action.start >= Config.ReviveTime then
+                    revive(target)
+                    actions[healer] = nil
+                end
+            else
+                if downed[target] or hum.Health <= 0 then
+                    actions[healer] = nil
+                elseif os.clock() - action.start >= Config.HealTime then
+                    hum.Health = math.min(hum.Health + hum.MaxHealth * 0.5, hum.MaxHealth * 0.5)
+                    healCooldowns[target] = os.clock()
+                    actions[healer] = nil
+                end
+            end
+        end
+    end
+
     for plr, info in pairs(downed) do
         if os.clock() - info.timer > Config.DownTime then
             if _G.Buyback and _G.Buyback.Capture then
@@ -84,7 +122,6 @@ _G.EventBus.Bind('Heartbeat', function()
                 plr.Character:BreakJoints()
             end
             downed[plr] = nil
-            -- game loop will handle game over when all players are down and crystal is destroyed
         end
     end
 end)

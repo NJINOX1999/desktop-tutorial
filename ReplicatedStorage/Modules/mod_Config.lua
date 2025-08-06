@@ -30,7 +30,7 @@ Config.CrystalBuffDamageMultiplier = 1.5
 Config.DownTime = 60
 Config.ReviveTime = 15
 Config.HealCooldown = 60
-Config.HealTime = 15
+Config.HealTime = 3 -- seconds to perform a 50% heal between living players
 
 Config.WaveBaseCount = 20
 Config.WaveScale = 0.05
