@@ -1,0 +1,13 @@
+{
+    "type": {
+        "definitionFiles": ["types/roblox.d.lua"]
+    },
+    "lint": {
+        "globals": {
+            "game": true,
+            "workspace": true,
+            "script": true,
+            "Enum": true
+        }
+    }
+}

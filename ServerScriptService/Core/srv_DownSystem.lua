@@ -79,6 +79,9 @@ end)
 _G.EventBus.Bind('Heartbeat', function()
     for plr, info in pairs(downed) do
         if os.clock() - info.timer > Config.DownTime then
+            if _G.Buyback and _G.Buyback.Capture then
+                _G.Buyback.Capture(plr)
+            end
             if plr.Character then
                 plr.Character:BreakJoints()
             end

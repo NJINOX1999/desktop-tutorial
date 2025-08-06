@@ -1,32 +1,49 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Remotes = ReplicatedStorage:WaitForChild('Remotes')
+local UserInputService = game:GetService('UserInputService')
+local BuildSystem = require(script.Parent.cli_BuildSystem)
 
--- Placeholder UI manager; handlers will be filled when GUI is implemented
+local currentItem
+local assets = ReplicatedStorage:WaitForChild('Assets', 5)
+local towers = assets and assets:FindFirstChild('Towers')
 
-Remotes:WaitForChild('RE_UpdateHUD').OnClientEvent:Connect(function(data)
-    -- TODO: update HUD elements with data
+-- HUD and shop events remain placeholders
+Remotes:WaitForChild('RE_UpdateHUD').OnClientEvent:Connect(function(_)
 end)
 
 Remotes:WaitForChild('RE_ToggleShop').OnClientEvent:Connect(function()
-    -- TODO: toggle shop interface
 end)
 
 Remotes:WaitForChild('RE_ShowGameOver').OnClientEvent:Connect(function()
-    -- TODO: show game over screen
 end)
 
-Remotes:WaitForChild('RE_SetDifficulty').OnClientEvent:Connect(function(diff)
-    -- TODO: reflect new difficulty in UI
+Remotes:WaitForChild('RE_SetDifficulty').OnClientEvent:Connect(function(_diff)
 end)
 
-Remotes:WaitForChild('RE_ShowBuyback').OnClientEvent:Connect(function(items)
-    -- TODO: display buyback menu with items
+Remotes:WaitForChild('RE_ShowBuyback').OnClientEvent:Connect(function(_items)
 end)
 
-Remotes:WaitForChild('RE_SetGhostColor').OnClientEvent:Connect(function(color)
-    -- TODO: set build ghost model color
+Remotes:WaitForChild('RE_UpdateXPBar').OnClientEvent:Connect(function(_current, _max)
 end)
 
-Remotes:WaitForChild('RE_UpdateXPBar').OnClientEvent:Connect(function(current, max)
-    -- TODO: update XP progress bar
+-- start tower placement from server or UI
+Remotes:WaitForChild('RE_StartTowerPlacement').OnClientEvent:Connect(function(itemId)
+    if towers then
+        local model = towers:FindFirstChild(itemId)
+        if model then
+            currentItem = itemId
+            BuildSystem:ShowPreview(model)
+        end
+    end
+end)
+
+UserInputService.InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if currentItem and input.UserInputType == Enum.UserInputType.MouseButton1 then
+        BuildSystem:RequestBuild(currentItem, BuildSystem:GetPreviewCFrame())
+        currentItem = nil
+    elseif currentItem and input.KeyCode == Enum.KeyCode.Escape then
+        BuildSystem:Cancel()
+        currentItem = nil
+    end
 end)

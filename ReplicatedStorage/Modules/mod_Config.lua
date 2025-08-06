@@ -1,8 +1,6 @@
--- Shared configuration constants
 local Config = {}
 
--- TODO: set final release version to v1.0.0
-Config.Version = "0.0.0"
+Config.Version = "v1.0.0"
 
 Config.Difficulty = "Normal" -- Easy, Normal, Hard
 Config.DifficultyModifiers = {
@@ -61,7 +59,6 @@ Config.MaxPlayers = 6
 
 Config.StartWeapon = 'Hands'
 Config.StartAmmo = 0
--- TODO: adjust buyback price to 10000 coins per specification
-Config.BuybackPrice = 10
+Config.BuybackPrice = 10000
 
 return Config
