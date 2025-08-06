@@ -18,7 +18,6 @@ function MonsterAI.new(model)
     self._path = nil
     self._target = nil
     self._lastPathCompute = 0
-    self.crystalBuffed = false
     if self.humanoid then
         self.walkAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Walk')
         self.attackAnim = AnimUtil.loadTrack(self.humanoid, 'Anim_Attack')
@@ -47,29 +46,6 @@ function MonsterAI.new(model)
                 Utilities.addXP(plr, 5)
             end
         end)
-        _G.EventBus.Bind('CrystalDestroyed', function()
-            if self.humanoid and self.humanoid.Health > 0 and not self.crystalBuffed then
-                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed * Config.CrystalBuffMultiplier
-                self.humanoid.MaxHealth = self.humanoid.MaxHealth * Config.CrystalBuffMultiplier
-                self.humanoid.Health = self.humanoid.Health * Config.CrystalBuffMultiplier
-                local mul = self.model:GetAttribute('DamageMul') or 1
-                self.model:SetAttribute('DamageMul', mul * Config.CrystalBuffDamageMultiplier)
-                self.crystalBuffed = true
-            end
-        end)
-        _G.EventBus.Bind('CrystalPlaced', function()
-            if self.humanoid and self.humanoid.Health > 0 and self.crystalBuffed then
-                self.humanoid.WalkSpeed = self.humanoid.WalkSpeed / Config.CrystalBuffMultiplier
-                self.humanoid.MaxHealth = self.humanoid.MaxHealth / Config.CrystalBuffMultiplier
-                self.humanoid.Health = math.min(self.humanoid.Health, self.humanoid.MaxHealth)
-                local mul = self.model:GetAttribute('DamageMul') or 1
-                self.model:SetAttribute('DamageMul', mul / Config.CrystalBuffDamageMultiplier)
-                self.crystalBuffed = false
-            end
-        end)
-        if _G.crystalLost then
-            self.crystalBuffed = true
-        end
         if self.walkAnim then self.walkAnim:Play() end
     end
     return self

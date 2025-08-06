@@ -2,7 +2,6 @@
 local ServerStorage = game:GetService('ServerStorage')
 
 local MonsterAI = require(script.Parent.Parent.Modules.mod_MonsterAI)
-local MonsterBuffService = require(script.Parent.Parent.Modules.mod_MonsterBuffService)
 local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
 local remotes = game:GetService('ReplicatedStorage'):WaitForChild('Remotes')
 local RE_UpdateWave = remotes:WaitForChild('RE_UpdateWave')
@@ -46,7 +45,9 @@ function WaveManager:SpawnWave(index)
                 hum.Health = hum.MaxHealth
                 hum.WalkSpeed = typeInfo.Speed
                 monster:SetAttribute('DamageMul', info.dmgMul * (typeInfo.Damage / 5))
-                MonsterBuffService.apply(monster)
+                if _G.EnemyBuffService then
+                    _G.EnemyBuffService.Apply(monster)
+                end
             end
             MonsterAI.new(monster):Start()
         end
@@ -84,7 +85,9 @@ function WaveManager:SpawnRandomDayEnemy()
             hum.Health = hum.MaxHealth
             hum.WalkSpeed = typeInfo.Speed
             monster:SetAttribute('DamageMul', (typeInfo.Damage / 5))
-            MonsterBuffService.apply(monster)
+            if _G.EnemyBuffService then
+                _G.EnemyBuffService.Apply(monster)
+            end
         end
         MonsterAI.new(monster):Start()
     end

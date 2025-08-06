@@ -1,10 +1,11 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Config = require(ReplicatedStorage.Modules.mod_Config)
 
-local MonsterBuffService = {}
+local EnemyBuffService = {}
+EnemyBuffService.BoostActive = false
 
-function MonsterBuffService.apply(monster)
-    if not _G.crystalLost then
+function EnemyBuffService.Apply(monster)
+    if not EnemyBuffService.BoostActive then
         return
     end
     local hum = monster:FindFirstChildOfClass('Humanoid')
@@ -17,5 +18,5 @@ function MonsterBuffService.apply(monster)
     monster:SetAttribute('DamageMul', dmgMul * Config.CrystalBuffDamageMultiplier)
 end
 
-return MonsterBuffService
-
+_G.EnemyBuffService = EnemyBuffService
+return EnemyBuffService

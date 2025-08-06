@@ -30,9 +30,7 @@ local function onCharacterAdded(player, char)
         downed[player] = {timer = os.clock()}
         hum.Health = 1
         hum.PlatformStand = true
-        if Crystal:ShouldGameOver() then
-            _G.EventBus.Fire('GameOver')
-        end
+        -- game loop will handle game over when all players are down and crystal is destroyed
     end)
 end
 
@@ -86,9 +84,7 @@ _G.EventBus.Bind('Heartbeat', function()
                 plr.Character:BreakJoints()
             end
             downed[plr] = nil
-            if Crystal:ShouldGameOver() then
-                _G.EventBus.Fire('GameOver')
-            end
+            -- game loop will handle game over when all players are down and crystal is destroyed
         end
     end
 end)

@@ -9,6 +9,9 @@ local DAY_LENGTH = Config.DayLength -- seconds
 local NIGHT_LENGTH = Config.NightLength -- seconds
 local CYCLE_LENGTH = DAY_LENGTH + NIGHT_LENGTH
 
+local GameState = {CrystalDestroyed = false}
+_G.GameState = GameState
+
 local timeOfDay = 0
 local isNight = false
 _G.isNight = false
@@ -47,12 +50,19 @@ local reAssignCrystal = remotes:FindFirstChild('RE_AssignCrystal')
 
 local function resetGame()
     Crystal:Reset()
+    GameState.CrystalDestroyed = false
+    if _G.EnemyBuffService then
+        _G.EnemyBuffService.BoostActive = false
+    end
     local host = Players:GetPlayers()[1]
     if host then
-        local tool = Instance.new('Tool')
-        tool.Name = 'CrystalItem'
-        tool.RequiresHandle = false
-        tool.Parent = host:FindFirstChildOfClass('Backpack') or host:WaitForChild('Backpack')
+        local tools = game:GetService('ServerStorage'):FindFirstChild('Tools')
+        local template = tools and tools:FindFirstChild('CrystalTool')
+        local backpack = host:FindFirstChildOfClass('Backpack') or host:WaitForChild('Backpack')
+        if template and backpack then
+            local tool = template:Clone()
+            tool.Parent = backpack
+        end
         if reAssignCrystal then reAssignCrystal:FireClient(host) end
     end
     timeOfDay = 0
@@ -84,15 +94,25 @@ RunService.Heartbeat:Connect(function(dt)
     timeOfDay = timeOfDay + dt
     checkTransitions()
     _G.EventBus.Fire('Heartbeat', dt)
-    if Crystal:ShouldGameOver() then
-        gameRunning = false
-        fire('GameOver')
-        task.delay(20, function()
-            resetGame()
-            if reGameOver then
-                reGameOver:FireAllClients('Reset')
+    if GameState.CrystalDestroyed then
+        local alive = 0
+        for _, plr in ipairs(Players:GetPlayers()) do
+            local hum = plr.Character and plr.Character:FindFirstChild('Humanoid')
+            if hum and hum.Health > 0 then
+                alive = alive + 1
             end
-        end)
+        end
+        if alive == 0 then
+            gameRunning = false
+            fire('GameOver')
+            task.delay(20, function()
+                resetGame()
+                if reGameOver then
+                    reGameOver:FireAllClients('Reset')
+                end
+            end)
+        end
+        return
     end
 end)
 
