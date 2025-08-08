@@ -9,7 +9,7 @@ local RE_PlayerSpawnRequest = Remotes:WaitForChild('RE_PlayerSpawnRequest')
 
 local downed = {}
 local reviveActions = {}
-local healCooldowns = {}
+local Heal = require(script.Parent.Parent.Modules.mod_Heal)
 
 local function revive(target, healer)
     local info = downed[target]
@@ -63,17 +63,7 @@ RE_RequestRevive.OnServerEvent:Connect(function(healer, target)
 end)
 
 RE_RequestHeal.OnServerEvent:Connect(function(healer, target)
-    if healCooldowns[healer] and os.clock() - healCooldowns[healer] < Config.HealCooldown then return end
-    if target and target.Character and target.Character:FindFirstChildOfClass('Humanoid') then
-        local hum = target.Character.Humanoid
-        local start = os.clock()
-        task.delay(Config.HealTime, function()
-            if os.clock() - start >= Config.HealTime and hum.Health > 0 then
-                hum.Health = hum.MaxHealth
-                healCooldowns[healer] = os.clock()
-            end
-        end)
-    end
+    Heal.tryHeal(healer, target)
 end)
 
 _G.EventBus.Bind('Heartbeat', function()

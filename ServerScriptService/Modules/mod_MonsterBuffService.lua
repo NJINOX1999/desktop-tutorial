@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local cfgModule = ReplicatedStorage.Modules.mod_Config
+local Config = type(cfgModule) == 'table' and cfgModule or require(cfgModule)
 
 local MonsterBuffService = {}
 

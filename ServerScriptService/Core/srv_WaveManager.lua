@@ -61,7 +61,7 @@ function WaveManager:SpawnWave(index)
 end
 
 _G.EventBus.Bind('NightStart', function()
-    WaveManager.currentWave  = WaveManager.currentWave + 1
+WaveManager.currentWave  = WaveManager.currentWave + 1
     WaveManager:SpawnWave(WaveManager.currentWave)
 end)
 
@@ -76,16 +76,41 @@ _G.EventBus.Bind('GameOver', function()
 end)
 
 _G.EventBus.Bind('CrystalPlaced', function()
-    if WaveManager.currentWave == 0 then
-        WaveManager:SpawnWave(0)
-    end
+    WaveManager.currentWave = 0
 end)
+
+local function spawnDayMonsters()
+    if not spawnFolder then return end
+    local types = Config.WaveMonsters.default
+    local count = math.random(1,3)
+    for i = 1, count do
+        local spawnPoint = spawnFolder:GetChildren()[((i-1) % #spawnFolder:GetChildren())+1]
+        local tName = types[((i-1) % #types) + 1]
+        local typeInfo = Config.MonsterTypes[tName] or Config.MonsterTypes.Default
+        local template = ServerStorage.Assets.Monsters:FindFirstChild(typeInfo.Model)
+        if template and spawnPoint then
+            local monster = template:Clone()
+            monster.Name = tName
+            monster.Parent = workspace.RuntimeObjects
+            monster.HumanoidRootPart.CFrame = spawnPoint.CFrame
+            local hum = monster:FindFirstChildOfClass('Humanoid')
+            if hum then
+                hum.MaxHealth = typeInfo.Health
+                hum.Health = hum.MaxHealth
+                hum.WalkSpeed = typeInfo.Speed
+                monster:SetAttribute('DamageMul', typeInfo.Damage / 5)
+                MonsterBuffService.apply(monster)
+            end
+            MonsterAI.new(monster):Start()
+        end
+    end
+end
 
 local function daySpawnLoop()
     while true do
         task.wait(Config.DaySpawnInterval)
         if not _G.isNight and math.random() < Config.DaySpawnChance then
-            WaveManager:SpawnWave(WaveManager.currentWave)
+            spawnDayMonsters()
         end
     end
 end
