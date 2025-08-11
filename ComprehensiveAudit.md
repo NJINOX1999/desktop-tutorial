@@ -2,7 +2,7 @@ Comprehensive Audit
 Lint .............. OK
 Headless Tests .... OK
 QuickCheck ........ OK
-Live Studio ....... OK
+Live Studio ....... FAIL
 
 AuditMatrix
 | # | Kriterium | OK / FAIL | Fundstelle / Bemerkung |
@@ -24,4 +24,7 @@ AuditMatrix
 |16 | QuickCheck QA_OK | OK | lua ServerScriptService/QA/QuickCheck.lua |
 
 Endergebnis
-✔ PROJEKT SPIELBAR (100 %)
+❌ FEHLER GEFUNDEN
+
+### TODO
+- implement automated TestService-based live studio check to validate runtime gameplay (e.g., tests/LiveStudio.spec.lua)
