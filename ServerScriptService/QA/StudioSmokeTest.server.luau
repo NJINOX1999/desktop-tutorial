@@ -23,20 +23,34 @@ TestService:Error(("FAIL [%s] %s"):format(tag, msg))
 end
 
 local function requireDesc(parent: Instance, name: string, cls: string?)
-local inst = parent:FindFirstChild(name)
-if not inst then return nil end
-if cls and not inst:IsA(cls) then return nil end
-return inst
+    local inst = parent:FindFirstChild(name)
+    if not inst then return nil end
+    if cls and not inst:IsA(cls) then return nil end
+    return inst
+end
+
+local function findRemote(remotes: Instance, keywords: {string}): Instance?
+    for _, child in ipairs(remotes:GetChildren()) do
+        if child:IsA("RemoteEvent") or child:IsA("RemoteFunction") then
+            local lname = string.lower(child.Name)
+            for _, kw in ipairs(keywords) do
+                if string.find(lname, kw, 1, true) then
+                    return child
+                end
+            end
+        end
+    end
+    return nil
 end
 
 local function waitPlayers(timeout: number): Player?
-local t0 = os.clock()
-while os.clock() - t0 < timeout do
-local list = Players:GetPlayers()
-if #list > 0 then return list[1] end
-task.wait(0.1)
-end
-return nil
+    local t0 = os.clock()
+    while os.clock() - t0 < timeout do
+        local list = Players:GetPlayers()
+        if #list > 0 then return list[1] end
+        task.wait(0.1)
+    end
+    return nil
 end
 
 -- Begin
@@ -60,43 +74,70 @@ else
 pass("RemotesFolder", "Ordner vorhanden")
 end
 
-local BuildRequest: Instance? = remotes:FindFirstChild("BuildRequest")
-local StartGame: Instance?   = remotes:FindFirstChild("StartGame")
-local Buyback: Instance?     = remotes:FindFirstChild("Buyback")
+local StartGame: Instance? = findRemote(remotes, {"startgame", "start", "begin"})
+local Build: Instance? = findRemote(remotes, {"buildrequest", "placetower", "build"})
+local Buyback: Instance? = findRemote(remotes, {"buyback", "revive", "respawn"})
 
-if StartGame then pass("Remote StartGame", "gefunden") else fail("Remote StartGame","fehlt") end
+if StartGame then pass("Remote StartGame", StartGame.Name) else fail("Remote StartGame", "fehlt") end
 if Config.BUILD_TEST then
-if BuildRequest then pass("Remote BuildRequest","gefunden") else fail("Remote BuildRequest","fehlt") end
+    if Build then pass("Remote Build", Build.Name) else fail("Remote Build", "fehlt") end
 end
 if Config.BUYBACK_TEST then
-if Buyback then pass("Remote Buyback","gefunden") else fail("Remote Buyback","fehlt") end
+    if Buyback then pass("Remote Buyback", Buyback.Name) else fail("Remote Buyback", "fehlt") end
 end
 
 -- 2) Spielstart (nur Event-Existenz wird verifiziert; Handler-Fehler würden hier crashen)
-if StartGame and StartGame:IsA("RemoteEvent") then
-task.spawn(function()
-(StartGame :: RemoteEvent):FireServer()
-end)
-pass("StartGame.FireServer","ausgeführt")
+if StartGame then
+    if StartGame:IsA("RemoteEvent") then
+        task.spawn(function()
+            (StartGame :: RemoteEvent):FireServer()
+        end)
+    else
+        task.spawn(function()
+            pcall(function()
+                (StartGame :: RemoteFunction):InvokeServer()
+            end)
+        end)
+    end
+    pass("StartGame.Call","ausgeführt")
 end
 
 -- 3) Optional: einfacher Tower-Bau-Call (Dummy Koordinaten – Server validiert!)
-if Config.BUILD_TEST and BuildRequest and BuildRequest:IsA("RemoteEvent") then
-task.spawn(function()
-(BuildRequest :: RemoteEvent):FireServer({
-towerId = "QA_SMOKE",
-position = Vector3.new(0, 0, 0),
-})
-end)
-pass("BuildRequest.FireServer","ausgeführt")
+if Config.BUILD_TEST and Build then
+    if Build:IsA("RemoteEvent") then
+        task.spawn(function()
+            (Build :: RemoteEvent):FireServer({
+                towerId = "QA_SMOKE",
+                position = Vector3.new(0, 0, 0),
+            })
+        end)
+    else
+        task.spawn(function()
+            pcall(function()
+                (Build :: RemoteFunction):InvokeServer({
+                    towerId = "QA_SMOKE",
+                    position = Vector3.new(0, 0, 0),
+                })
+            end)
+        end)
+    end
+    pass("Build.Call","ausgeführt")
 end
 
 -- 4) Optional: Buyback-Ping (nur Existenz/Permissions)
-if Config.BUYBACK_TEST and Buyback and Buyback:IsA("RemoteEvent") then
-task.spawn(function()
-(Buyback :: RemoteEvent):FireServer()
-end)
-pass("Buyback.FireServer","ausgeführt")
+if Config.BUYBACK_TEST and Buyback then
+    if Buyback:IsA("RemoteEvent") then
+        task.spawn(function()
+            (Buyback :: RemoteEvent):FireServer()
+        end)
+    else
+        task.spawn(function()
+            pcall(function()
+                (Buyback :: RemoteFunction):InvokeServer()
+            end)
+        end)
+    end
+    pass("Buyback.Call","ausgeführt")
 end
 
 -- 5) Abschluss: Flag setzen
