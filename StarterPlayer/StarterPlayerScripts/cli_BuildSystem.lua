@@ -1,5 +1,6 @@
 -- Client-side build placement preview and request
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
+local RunService = game:GetService('RunService')
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
 local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
 local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
@@ -12,7 +13,9 @@ local BuildValidator = require(ReplicatedStorage.Modules.mod_BuildValidator)
 local BuildSystem = {}
 
 RE_BuildMessage.OnClientEvent:Connect(function(text)
-    warn(text)
+    if RunService:IsStudio() then
+        warn(text)
+    end
 end)
 
 function BuildSystem:RequestBuild(itemId, cframe)

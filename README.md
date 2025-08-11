@@ -25,7 +25,3 @@ Implemented systems include:
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.
 
-## Live-Studio-Check
-In Roblox Studio -> Play (F5). Der Smoke-Test läuft serverseitig automatisch.
-Ergebnisse unter View -> Output (TestService Messages). Bei Erfolg erscheint
-`ReplicatedStorage/QA_LiveStudio_PASS = true`.
