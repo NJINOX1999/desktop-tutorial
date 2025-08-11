@@ -33,6 +33,9 @@ end
 local spec = dofile("tests/tests/TestEZ/init.spec.lua")
 spec()
 
+local liveSpec = dofile("tests/LiveStudio.spec.luau")
+liveSpec()
+
 if failures > 0 then
     os.exit(1)
 else
