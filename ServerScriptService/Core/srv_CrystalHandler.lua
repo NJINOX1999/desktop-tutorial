@@ -1,6 +1,7 @@
 -- Handles crystal placement and destruction events
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Players = game:GetService('Players')
+local NetRateLimiter = require(script.Parent.Parent.Modules.NetRateLimiter)
 local CrystalModule = require(script.Parent.Parent.Modules.mod_Crystal)
 local MonsterBuffService = require(script.Parent.Parent.Modules.mod_MonsterBuffService)
 local ServerStorage = game:GetService('ServerStorage')
@@ -29,6 +30,7 @@ local function giveCrystalItem(player)
 end
 
 rePlace.OnServerEvent:Connect(function(player, pos)
+    if not NetRateLimiter.Allow(player, rePlace.Name) then return end
     if typeof(pos) ~= 'Vector3' then return end
     -- only host or assigned player may place
     if player ~= Players:GetPlayers()[1] then return end

@@ -25,3 +25,8 @@ Implemented systems include:
 
 The scripts are simplified for demonstration and do not represent final gameplay quality.
 
+
+## Backend reliability
+- SaveService now retries DataStore requests with backoff and session locks.
+- Revive flow aborts if players leave or characters vanish.
+- Added per-remote NetRateLimiter to throttle client calls.

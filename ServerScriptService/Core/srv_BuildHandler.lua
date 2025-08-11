@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local ServerStorage = game:GetService('ServerStorage')
 
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local NetRateLimiter = require(script.Parent.Parent.Modules.NetRateLimiter)
 local BuildRequest = remotes:WaitForChild('RE_BuildRequest')
 local RE_BuildMessage = remotes:WaitForChild('RE_BuildMessage')
 local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
@@ -14,6 +15,7 @@ local builtCounts = {}
 local Players = game:GetService('Players')
 
 BuildRequest.OnServerEvent:Connect(function(player, itemId, pos, rot)
+    if not NetRateLimiter.Allow(player, BuildRequest.Name) then return end
     if typeof(pos) ~= 'Vector3' or typeof(rot) ~= 'Vector3' or type(itemId) ~= 'string' then
         return
     end

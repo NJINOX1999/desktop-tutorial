@@ -1,6 +1,7 @@
 -- Handles shop toggling and purchases
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local NetRateLimiter = require(script.Parent.Parent.Modules.NetRateLimiter)
 local RE_ToggleShop = remotes:WaitForChild('RE_ToggleShop')
 local RF_BuyItem = remotes:WaitForChild('RF_BuyItem')
 local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
@@ -12,10 +13,12 @@ local prices = {
 }
 
 RE_ToggleShop.OnServerEvent:Connect(function(player)
+    if not NetRateLimiter.Allow(player, RE_ToggleShop.Name) then return end
     RE_ToggleShop:FireClient(player)
 end)
 
 RF_BuyItem.OnServerInvoke = function(player, item)
+    if not NetRateLimiter.Allow(player, RF_BuyItem.Name) then return false end
     if typeof(item) ~= 'string' then return false end
     local cost = prices[item]
     if not cost or not player._data or player._data.Coins < cost then
