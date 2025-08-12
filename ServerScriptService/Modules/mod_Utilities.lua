@@ -1,7 +1,10 @@
--- Shared utility functions
+local RunService = game:GetService('RunService')
 local Utilities = {}
 
 function Utilities.printTable(tbl, indent)
+    if not RunService:IsStudio() then
+        return
+    end
     indent = indent or 0
     for k, v in pairs(tbl) do
         print(string.rep(' ', indent) .. k, v)

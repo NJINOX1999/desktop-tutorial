@@ -1,6 +1,7 @@
 local Players = game:GetService('Players')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Remotes = ReplicatedStorage:WaitForChild('Remotes')
+local NetRateLimiter = require(script.Parent.Parent.Modules.NetRateLimiter)
 local RE_BuybackOpen = Remotes:WaitForChild('RE_BuybackOpen')
 local RF_BuybackItem = Remotes:WaitForChild('RF_BuybackItem')
 local Config = require(ReplicatedStorage.Modules.mod_Config)
@@ -42,6 +43,7 @@ Players.PlayerRemoving:Connect(function(plr)
 end)
 
 RE_BuybackOpen.OnServerEvent:Connect(function(plr)
+    if not NetRateLimiter.Allow(plr, RE_BuybackOpen.Name) then return end
     local data = {}
     for _, info in ipairs(lost[plr] or {}) do
         table.insert(data, {name = info.tool.Name, price = info.price})
@@ -50,6 +52,7 @@ RE_BuybackOpen.OnServerEvent:Connect(function(plr)
 end)
 
 RF_BuybackItem.OnServerInvoke = function(plr, itemName)
+    if not NetRateLimiter.Allow(plr, RF_BuybackItem.Name) then return false end
     local items = lost[plr]
     if not items then return false end
     local stats = plr:FindFirstChild('leaderstats')

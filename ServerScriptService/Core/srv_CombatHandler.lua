@@ -2,6 +2,7 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local NetRateLimiter = require(script.Parent.Parent.Modules.NetRateLimiter)
 local RE_Fire = remotes:WaitForChild('RE_FireWeapon')
 local RE_UpdateAmmo = remotes:WaitForChild('RE_UpdateAmmo')
 local Config = require(ReplicatedStorage.Modules.mod_Config)
@@ -12,6 +13,7 @@ local function getWeaponInfo(player)
 end
 
 RE_Fire.OnServerEvent:Connect(function(player, targetPos)
+    if not NetRateLimiter.Allow(player, RE_Fire.Name) then return end
     if typeof(targetPos) ~= 'Vector3' then return end
     local char = player.Character
     if not char then return end

@@ -2,6 +2,7 @@
 local RunService = game:GetService('RunService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Players = game:GetService('Players')
+local NetRateLimiter = require(script.Parent.Parent.Modules.NetRateLimiter)
 
 local Config = require(ReplicatedStorage.Modules.mod_Config)
 
@@ -94,6 +95,9 @@ end)
 
 if reSetDiff then
     reSetDiff.OnServerEvent:Connect(function(player, diff)
+        if not NetRateLimiter.Allow(player, reSetDiff.Name) then
+            return
+        end
         if player ~= game:GetService('Players'):GetPlayers()[1] then
             return
         end

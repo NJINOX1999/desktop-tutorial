@@ -1,10 +1,12 @@
 -- Handles loot pickup requests from clients
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local remotes = ReplicatedStorage:WaitForChild('Remotes')
+local NetRateLimiter = require(script.Parent.Parent.Modules.NetRateLimiter)
 local RE = remotes:WaitForChild('RE_LootPickup')
 local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
 
 RE.OnServerEvent:Connect(function(player, loot)
+    if not NetRateLimiter.Allow(player, RE.Name) then return end
     if typeof(loot) ~= 'Instance' or not loot:IsDescendantOf(workspace.RuntimeObjects) then
         return
     end

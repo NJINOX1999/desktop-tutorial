@@ -1,3 +1,0 @@
-Version: v1.0.0
-Tests A–E PASS
-ALLE 10 KRITERIEN ERFÜLLT
