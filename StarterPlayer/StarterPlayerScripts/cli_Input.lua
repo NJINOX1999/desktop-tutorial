@@ -1,7 +1,8 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local RE_Revive = ReplicatedStorage.Remotes:WaitForChild('RE_RequestRevive')
-local RE_Heal = ReplicatedStorage.Remotes:WaitForChild('RE_RequestHeal')
-local RE_ToggleShop = ReplicatedStorage.Remotes:WaitForChild('RE_ToggleShop')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RE_Revive = RemoteEvents:WaitForChild('RE_RequestRevive')
+local RE_Heal = RemoteEvents:WaitForChild('RE_RequestHeal')
+local RE_ToggleShop = RemoteEvents:WaitForChild('RE_ToggleShop')
 local UIS = game:GetService('UserInputService')
 local player = game.Players.LocalPlayer
 

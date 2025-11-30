@@ -3,7 +3,7 @@ local RunService = game:GetService('RunService')
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local Players = game:GetService('Players')
 
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local Config = require(ReplicatedStorage.Config)
 
 local DAY_LENGTH = Config.DayLength -- seconds
 local NIGHT_LENGTH = Config.NightLength -- seconds
@@ -33,13 +33,13 @@ _G.EventBus = {Bind = bind, Fire = fire}
 local ResourceManager = require(script.Parent.Modules.mod_ResourceManager)
 ResourceManager:Init()
 local Crystal = require(script.Parent.Modules.mod_Crystal)
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local reDay = remotes:FindFirstChild('RE_DayStart')
-local reNight = remotes:FindFirstChild('RE_NightStart')
-local reTime = remotes:FindFirstChild('RE_TimeOfDayChanged')
-local reSetDiff = remotes:FindFirstChild('RE_SetDifficulty')
-local reGameOver = remotes:FindFirstChild('RE_GameOver')
-local reAssignCrystal = remotes:FindFirstChild('RE_AssignCrystal')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local reDay = RemoteEvents:FindFirstChild('RE_DayStart')
+local reNight = RemoteEvents:FindFirstChild('RE_NightStart')
+local reTime = RemoteEvents:FindFirstChild('RE_TimeOfDayChanged')
+local reSetDiff = RemoteEvents:FindFirstChild('RE_SetDifficulty')
+local reGameOver = RemoteEvents:FindFirstChild('RE_GameOver')
+local reAssignCrystal = RemoteEvents:FindFirstChild('RE_AssignCrystal')
 
 local function resetGame()
     Crystal:Reset()

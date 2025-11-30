@@ -1,8 +1,8 @@
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RE_PlayerSpawnRequest = remotes:WaitForChild('RE_PlayerSpawnRequest')
-local RE_SetDifficulty = remotes:WaitForChild('RE_SetDifficulty')
-local RE_GameOver = remotes:WaitForChild('RE_GameOver')
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RE_PlayerSpawnRequest = RemoteEvents:WaitForChild('RE_PlayerSpawnRequest')
+local RE_SetDifficulty = RemoteEvents:WaitForChild('RE_SetDifficulty')
+local RE_GameOver = RemoteEvents:WaitForChild('RE_GameOver')
 
 local gui = script.Parent
 local playButton = gui:WaitForChild('PlayButton')

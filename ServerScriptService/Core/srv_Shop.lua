@@ -1,11 +1,12 @@
 -- Handles shop toggling and purchases
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
-local remotes = ReplicatedStorage:WaitForChild('Remotes')
-local RE_ToggleShop = remotes:WaitForChild('RE_ToggleShop')
-local RF_BuyItem = remotes:WaitForChild('RF_BuyItem')
-local RE_UpdateCoins = remotes:WaitForChild('RE_UpdateCoins')
-local RE_UpdateAmmo = remotes:WaitForChild('RE_UpdateAmmo')
-local Config = require(ReplicatedStorage.Modules.mod_Config)
+local RemoteEvents = ReplicatedStorage:WaitForChild('RemoteEvents')
+local RemoteFunctions = ReplicatedStorage:WaitForChild('RemoteFunctions')
+local RE_ToggleShop = RemoteEvents:WaitForChild('RE_ToggleShop')
+local RF_BuyItem = RemoteFunctions:WaitForChild('RF_BuyItem')
+local RE_UpdateCoins = RemoteEvents:WaitForChild('RE_UpdateCoins')
+local RE_UpdateAmmo = RemoteEvents:WaitForChild('RE_UpdateAmmo')
+local Config = require(ReplicatedStorage.Config)
 
 local prices = {
     Ammo = 5,

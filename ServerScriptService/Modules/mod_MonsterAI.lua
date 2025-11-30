@@ -6,7 +6,7 @@ local Crystal = require(script.Parent.mod_Crystal)
 local DropTable = require(script.Parent.mod_DropTable)
 local Utilities = require(script.Parent.mod_Utilities)
 local AnimUtil = require(game:GetService('ReplicatedStorage').Modules.mod_AnimationManager)
-local Config = require(game:GetService('ReplicatedStorage').Modules.mod_Config)
+local Config = require(game:GetService('ReplicatedStorage').Config)
 
 local MonsterAI = {}
 MonsterAI.__index = MonsterAI
