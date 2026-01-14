@@ -16,9 +16,10 @@ RE_BuildMessage.OnClientEvent:Connect(function(text)
 end)
 
 function BuildSystem:RequestBuild(itemId, cframe)
-    if canPlace then
+    cframe = cframe or (preview and preview:GetPrimaryPartCFrame())
+    if canPlace and cframe then
         BuildRequest:FireServer(itemId, cframe.Position, cframe.Rotation)
-        if preview then preview:Destroy() preview = nil end
+        self:Cancel()
     end
 end
 
@@ -52,6 +53,18 @@ function BuildSystem:Update()
                 d.Color = Color3.fromRGB(255, 0, 0)
             end
         end
+    end
+end
+
+function BuildSystem:GetPreviewCFrame()
+    return preview and preview:GetPrimaryPartCFrame() or nil
+end
+
+function BuildSystem:Cancel()
+    if preview then
+        preview:Destroy()
+        preview = nil
+        canPlace = false
     end
 end
 

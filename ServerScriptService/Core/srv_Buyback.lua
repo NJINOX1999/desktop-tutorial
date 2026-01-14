@@ -29,6 +29,8 @@ local function captureInventory(plr)
     end
 end
 
+_G.Buyback = {Capture = captureInventory, Lost = lost}
+
 Players.PlayerAdded:Connect(function(plr)
     plr.CharacterRemoving:Connect(function()
         captureInventory(plr)

@@ -1,5 +1,6 @@
--- Shared configuration constants
 local Config = {}
+
+Config.Version = "v1.0.0"
 
 Config.Difficulty = "Normal" -- Easy, Normal, Hard
 Config.DifficultyModifiers = {
@@ -58,6 +59,6 @@ Config.MaxPlayers = 6
 
 Config.StartWeapon = 'Hands'
 Config.StartAmmo = 0
-Config.BuybackPrice = 10
+Config.BuybackPrice = 10000
 
 return Config
